@@ -54,11 +54,11 @@ The app defines following CRUD APIs.
 | GET    | /api/users/checkUsernameAvailability | Check if username is available to register | |
 | GET    | /api/users/checkEmailAvailability | Check if email is available to register | |
 | POST   | /api/users | Add user (Only for admins) | [JSON](#usercreate) |
-| PUT    | /api/users/{username} | Update user (For logged in user) | [JSON](#userupdate) |
+| PUT    | /api/users/{username} | Update user (If profile belongs to logged in user or logged in user is admin) | [JSON](#userupdate) |
 | DELETE | /api/users/{username} | Delete user (For logged in user or admin) | |
 | PUT    | /api/users/{username}/giveAdmin | Give admin role to user (only for admins) | |
 | PUT    | /api/users/{username}/TakeAdmin | Take admin role from user (only for admins) | |
-| PUT    | /api/users/setOrUpdateInfo | Update user profile (For logged in user) | [JSON](#userinfoupdate) |
+| PUT    | /api/users/setOrUpdateInfo | Update user profile (If profile belongs to logged in user or logged in user is admin) | [JSON](#userinfoupdate) |
 
 ### Posts
 
@@ -77,8 +77,8 @@ The app defines following CRUD APIs.
 | GET    | /api/posts/{postId}/comments | Get all comments which belongs to post with id = postId | |
 | GET    | /api/posts/{postId}/comments/{id} | Get comment by id if it belongs to post with id = postId | |
 | POST   | /api/posts/{postId}/comments | Create new comment for post with id = postId (By logged in user) | [JSON](#commentcreate) |
-| PUT    | /api/posts/{postId}/comments/{id} | Update comment by id if it belongs to post with id = postId (If comment belongs to logged in user) | [JSON](#commentupdate) |
-| DELETE | /api/posts/{postId}/comments/{id} | Delete comment by id if it belongs to post with id = postId (If comment belongs to logged in user) | |
+| PUT    | /api/posts/{postId}/comments/{id} | Update comment by id if it belongs to post with id = postId (If comment belongs to logged in user or logged in user is admin) | [JSON](#commentupdate) |
+| DELETE | /api/posts/{postId}/comments/{id} | Delete comment by id if it belongs to post with id = postId (If comment belongs to logged in user or logged in user is admin) | |
 
 ### Albums
 
@@ -87,8 +87,8 @@ The app defines following CRUD APIs.
 | GET    | /api/albums | Get all albums | |
 | GET    | /api/albums/{id} | Get album by id | |
 | POST   | /api/albums | Create new album (By logged in user) | [JSON](#albumcreate) |
-| PUT    | /api/albums/{id} | Update album (If album belongs to logged in user) | [JSON](#albumupdate) |
-| DELETE | /api/albums/{id} | Delete album (If album belongs to logged in user) | |
+| PUT    | /api/albums/{id} | Update album (If album belongs to logged in user or logged in user is admin) | [JSON](#albumupdate) |
+| DELETE | /api/albums/{id} | Delete album (If album belongs to logged in user or logged in user is admin) | |
 | GET    | /api/albums/{id}/photos | Get all photos which belongs to album with id = id | |
 
 ### Photos
@@ -98,8 +98,8 @@ The app defines following CRUD APIs.
 | GET    | /api/photos | Get all photos | |
 | GET    | /api/photos/{id} | Get photo by id | |
 | POST   | /api/photos | Create new photo (By logged in user) | [JSON](#photocreate) |
-| PUT    | /api/photos/{id} | Update photo (If photo belongs to logged in user) | [JSON](#photoupdate) |
-| DELETE | /api/photos/{id} | Delete photo (If photo belongs to logged in user) | |
+| PUT    | /api/photos/{id} | Update photo (If photo belongs to logged in user or logged in user is admin) | [JSON](#photoupdate) |
+| DELETE | /api/photos/{id} | Delete photo (If photo belongs to logged in user or logged in user is admin) | |
 
 ### Todos
 
