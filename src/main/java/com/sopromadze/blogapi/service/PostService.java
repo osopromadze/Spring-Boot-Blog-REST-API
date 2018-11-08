@@ -67,15 +67,7 @@ public class PostService {
 
     public ResponseEntity<?> updatePost(Long id, Post newPost, UserPrincipal currentUser){
         Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
-        if (post.getUser().getId().equals(currentUser.getId())){
-            post.setUpdatedBy(post.getUser().getId());
-            post.setTitle(newPost.getTitle());
-            post.setBody(newPost.getBody());
-            Post updatedPost = postRepository.save(post);
-            return new ResponseEntity<>(updatedPost, HttpStatus.OK);
-        }
-        if (currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))){
-            post.setUpdatedBy(currentUser.getId());
+        if (post.getUser().getId().equals(currentUser.getId()) || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))){
             post.setTitle(newPost.getTitle());
             post.setBody(newPost.getBody());
             Post updatedPost = postRepository.save(post);
