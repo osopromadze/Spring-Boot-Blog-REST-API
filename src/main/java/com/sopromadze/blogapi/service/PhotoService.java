@@ -4,6 +4,7 @@ import com.sopromadze.blogapi.exception.BadRequestException;
 import com.sopromadze.blogapi.exception.ResourceNotFoundException;
 import com.sopromadze.blogapi.model.album.Album;
 import com.sopromadze.blogapi.model.photo.Photo;
+import com.sopromadze.blogapi.model.role.RoleName;
 import com.sopromadze.blogapi.payload.ApiResponse;
 import com.sopromadze.blogapi.payload.PagedResponse;
 import com.sopromadze.blogapi.payload.PhotoRequest;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -62,7 +64,7 @@ public class PhotoService {
     public ResponseEntity<?> updatePhoto(Long id, PhotoRequest photoRequest, UserPrincipal currentUser){
         Album album = albumRepository.findById(photoRequest.getAlbumId()).orElseThrow(() -> new ResourceNotFoundException("Album", "id", photoRequest.getAlbumId()));
         Photo photo = photoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Photo", "id", id));
-        if(photo.getAlbum().getUser().getId().equals(currentUser.getId())){
+        if(photo.getAlbum().getUser().getId().equals(currentUser.getId()) || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))){
             photo.setTitle(photoRequest.getTitle());
             photo.setThumbnailUrl(photoRequest.getThumbnailUrl());
             photo.setAlbum(album);
@@ -84,7 +86,7 @@ public class PhotoService {
 
     public ResponseEntity<?> deletePhoto(Long id, UserPrincipal currentUser){
         Photo photo = photoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Photo", "id", id));
-        if(photo.getAlbum().getUser().getId().equals(currentUser.getId())){
+        if(photo.getAlbum().getUser().getId().equals(currentUser.getId()) || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))){
             photoRepository.deleteById(id);
             return new ResponseEntity<>(new ApiResponse(true, "Photo deleted successfully"), HttpStatus.OK);
         }

@@ -50,13 +50,13 @@ public class PhotoController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> updatePhoto(@PathVariable(name = "id") Long id, @Valid @RequestBody PhotoRequest photoRequest, @CurrentUser UserPrincipal currentUser){
         return photoService.updatePhoto(id, photoRequest, currentUser);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> deletePhoto(@PathVariable(name = "id") Long id, @CurrentUser UserPrincipal currentUser){
         return photoService.deletePhoto(id, currentUser);
     }
