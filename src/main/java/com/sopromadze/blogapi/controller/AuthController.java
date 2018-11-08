@@ -76,8 +76,15 @@ public class AuthController {
         if(userRepository.existsByEmail(signUpRequest.getEmail())){
             return new ResponseEntity<>(new ApiResponse(false, "Email is already taken"), HttpStatus.BAD_REQUEST);
         }
+        String firstName = signUpRequest.getFirstName().substring(0, 1).toUpperCase() + signUpRequest.getFirstName().substring(1).toLowerCase();
 
-        User user = new User(signUpRequest.getFirstame(), signUpRequest.getLastName(), signUpRequest.getUsername(), signUpRequest.getEmail(), signUpRequest.getPassword());
+        String lastName = signUpRequest.getLastName().substring(0, 1).toUpperCase() + signUpRequest.getLastName().substring(1).toLowerCase();
+
+        String username = signUpRequest.getUsername().toLowerCase();
+
+        String email = signUpRequest.getEmail().toLowerCase();
+
+        User user = new User(firstName, lastName, username, email, signUpRequest.getPassword());
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 

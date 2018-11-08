@@ -1,6 +1,5 @@
 package com.sopromadze.blogapi.payload;
 
-import javax.validation.MessageInterpolator;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -51,7 +50,7 @@ public class SignUpRequest {
         this.password = password;
     }
 
-    public String getFirstame() {
+    public String getFirstName() {
         return firstName;
     }
 
