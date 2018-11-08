@@ -16,6 +16,7 @@ import com.sopromadze.blogapi.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -79,19 +80,22 @@ public class UserService {
 
     public ResponseEntity<?> updateUser(User newUser, String username, UserPrincipal currentUser){
         User user = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
-        if(!user.getId().equals(currentUser.getId())){
-            return new ResponseEntity<>(new ApiResponse(false, "You don't have permission to update profile of: " + username), HttpStatus.UNAUTHORIZED);
-        }
-        user.setFirstName(newUser.getFirstName());
-        user.setLastName(newUser.getLastName());
-        user.setPassword(passwordEncoder.encode(newUser.getPassword()));
-        user.setAddress(newUser.getAddress());
-        user.setPhone(newUser.getPhone());
-        user.setWebsite(newUser.getWebsite());
-        user.setCompany(newUser.getCompany());
+        if(user.getId().equals(currentUser.getId()) || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))){
+            user.setFirstName(newUser.getFirstName());
+            user.setLastName(newUser.getLastName());
+            user.setPassword(passwordEncoder.encode(newUser.getPassword()));
+            user.setAddress(newUser.getAddress());
+            user.setPhone(newUser.getPhone());
+            user.setWebsite(newUser.getWebsite());
+            user.setCompany(newUser.getCompany());
 
-        User updatedUser =  userRepository.save(user);
-        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+            User updatedUser =  userRepository.save(user);
+            return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+
+        }
+
+        return new ResponseEntity<>(new ApiResponse(false, "You don't have permission to update profile of: " + username), HttpStatus.UNAUTHORIZED);
+
     }
 
     public ResponseEntity<?> deleteUser(String username, UserPrincipal currentUser){
@@ -128,16 +132,19 @@ public class UserService {
         Geo geo = new Geo(infoRequest.getLat(), infoRequest.getLng());
         Address address = new Address(infoRequest.getStreet(), infoRequest.getSuite(), infoRequest.getCity(), infoRequest.getZipcode(), geo);
         Company company = new Company(infoRequest.getCompanyName(), infoRequest.getCatchPhrase(), infoRequest.getBs());
-        user.setAddress(address);
-        user.setCompany(company);
-        user.setWebsite(infoRequest.getWebsite());
-        user.setPhone(infoRequest.getPhone());
-        User updatedUser = userRepository.save(user);
+        if (user.getId().equals(currentUser.getId()) || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))){
+            user.setAddress(address);
+            user.setCompany(company);
+            user.setWebsite(infoRequest.getWebsite());
+            user.setPhone(infoRequest.getPhone());
+            User updatedUser = userRepository.save(user);
 
-        Long postCount = postRepository.countByCreatedBy(updatedUser.getId());
+            Long postCount = postRepository.countByCreatedBy(updatedUser.getId());
 
 
-        UserProfile userProfile = new UserProfile(updatedUser.getId(), updatedUser.getUsername(), updatedUser.getFirstName(), updatedUser.getLastName(), updatedUser.getCreatedAt(), updatedUser.getEmail(), updatedUser.getAddress(), updatedUser.getPhone(), updatedUser.getWebsite(), updatedUser.getCompany(), postCount);
-        return new ResponseEntity<>(userProfile, HttpStatus.OK);
+            UserProfile userProfile = new UserProfile(updatedUser.getId(), updatedUser.getUsername(), updatedUser.getFirstName(), updatedUser.getLastName(), updatedUser.getCreatedAt(), updatedUser.getEmail(), updatedUser.getAddress(), updatedUser.getPhone(), updatedUser.getWebsite(), updatedUser.getCompany(), postCount);
+            return new ResponseEntity<>(userProfile, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new ApiResponse(false, "You don't have permission to update users profile"), HttpStatus.OK);
     }
 }

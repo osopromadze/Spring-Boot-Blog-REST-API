@@ -59,11 +59,13 @@ public class TodoController {
     }
 
     @PutMapping("/{id}/complete")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> completeTodo(@PathVariable(value = "id") Long id, @CurrentUser UserPrincipal currentUser){
         return todoService.completeTodo(id, currentUser);
     }
 
     @PutMapping("/{id}/unComplete")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> unCompleteTodo(@PathVariable(value = "id") Long id, @CurrentUser UserPrincipal currentUser){
         return todoService.unCompleteTodo(id, currentUser);
     }

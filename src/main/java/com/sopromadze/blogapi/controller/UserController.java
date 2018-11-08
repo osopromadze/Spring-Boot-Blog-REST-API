@@ -76,7 +76,7 @@ public class UserController {
     }
 
     @PutMapping("/{username}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> updateUser(@Valid @RequestBody User newUser, @PathVariable(value = "username") String username, @CurrentUser UserPrincipal currentUser){
         return userService.updateUser(newUser, username, currentUser);
     }
@@ -100,7 +100,7 @@ public class UserController {
     }
 
     @PutMapping("/setOrUpdateInfo")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> setAddress(@CurrentUser UserPrincipal currentUser, @Valid @RequestBody InfoRequest infoRequest){
         return userService.setOrUpdateInfo(currentUser, infoRequest);
     }
