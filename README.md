@@ -14,7 +14,7 @@ git clone https://github.com/coma123/Spring-Boot-Blog-REST-API.git
 ```bash
 create database blogapi
 ```
-+ run `src/main/resources/blogapi.sql`
+- run `src/main/resources/blogapi.sql`
 
 **3. Change mysql username and password as per your installation**
 
