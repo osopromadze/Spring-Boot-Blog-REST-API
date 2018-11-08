@@ -48,11 +48,11 @@ The app defines following CRUD APIs.
 | Method | Url | Decription |
 | ------ | --- | ---------- |
 | GET    | /api/users/me | Get logged in user profile |
-| GET    | /{username}/profile | Get user profile by username |
-| GET    | /{username}/posts | Get posts created by user |
-| GET    | /{username}/albums | Get albums created by user |
-| GET    | /checkUsernameAvailability | Check if username is available to register |
-| GET    | /checkEmailAvailability | Check if email is available to register |
+| GET    | /api/users/{username}/profile | Get user profile by username |
+| GET    | /api/users/{username}/posts | Get posts created by user |
+| GET    | /api/users/{username}/albums | Get albums created by user |
+| GET    | /api/users/checkUsernameAvailability | Check if username is available to register |
+| GET    | /api/users/checkEmailAvailability | Check if email is available to register |
 | POST   | /api/users | Add user (Only for admins) |
 | PUT    | /api/users/{username} | Update user (For logged in user) |
 | DELETE | /api/users/{username} | Delete user (For logged in user or admin) |
