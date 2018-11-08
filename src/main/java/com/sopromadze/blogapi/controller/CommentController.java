@@ -49,13 +49,13 @@ public class CommentController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> updateComment(@PathVariable(name = "postId") Long postId, @PathVariable(name = "id") Long id, @Valid @RequestBody CommentRequest commentRequest, @CurrentUser UserPrincipal currentUser){
         return commentService.updateComment(postId, id, commentRequest, currentUser);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> deleteComment(@PathVariable(name = "postId") Long postId, @PathVariable(name = "id") Long id, @CurrentUser UserPrincipal currentUser){
         return commentService.deleteComment(postId, id, currentUser);
     }
