@@ -69,11 +69,6 @@ public class UserController {
         return albumService.getUserAlbums(username, page, size);
     }
 
-    /**
-     *
-     * @param user
-     * @return
-     */
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> addUser(@Valid @RequestBody User user){
