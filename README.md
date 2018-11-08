@@ -16,6 +16,10 @@ create database blogapi
 ```
 + run `src/main/resources/blogapi.sql`
 
+```bash
+INSERT INTO blogapi.roles(name) VALUES('ROLE_ADMIN'), ('ROLE_USER')
+```
+
 **3. Change mysql username and password as per your installation**
 
 + open `src/main/resources/application.properties`
