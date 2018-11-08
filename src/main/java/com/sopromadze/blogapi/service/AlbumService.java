@@ -3,6 +3,7 @@ package com.sopromadze.blogapi.service;
 import com.sopromadze.blogapi.exception.BadRequestException;
 import com.sopromadze.blogapi.exception.ResourceNotFoundException;
 import com.sopromadze.blogapi.model.album.Album;
+import com.sopromadze.blogapi.model.role.RoleName;
 import com.sopromadze.blogapi.model.user.User;
 import com.sopromadze.blogapi.payload.ApiResponse;
 import com.sopromadze.blogapi.payload.PagedResponse;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -60,7 +62,7 @@ public class AlbumService {
     public ResponseEntity<?> updateAlbum(Long id, Album newAlbum, UserPrincipal currentUser){
         Album album = albumRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Album", "id", id));
         User user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow(() -> new ResourceNotFoundException("User", "username", currentUser.getUsername()));
-        if (album.getUser().getId().equals(user.getId())){
+        if (album.getUser().getId().equals(user.getId()) || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))){
             album.setTitle(newAlbum.getTitle());
             Album updatedAlbum = albumRepository.save(album);
             return new ResponseEntity<>(updatedAlbum, HttpStatus.OK);
@@ -71,7 +73,7 @@ public class AlbumService {
     public ResponseEntity<?> deleteAlbum(Long id, UserPrincipal currentUser){
         Album album = albumRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Album", "id", id));
         User user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow(() -> new ResourceNotFoundException("User", "username", currentUser.getUsername()));
-        if (album.getUser().getId().equals(user.getId())){
+        if (album.getUser().getId().equals(user.getId()) || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))){
             albumRepository.deleteById(id);
             return new ResponseEntity<>(new ApiResponse(true, "You successfully deleted album"), HttpStatus.OK);
         }

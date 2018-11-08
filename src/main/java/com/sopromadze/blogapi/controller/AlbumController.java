@@ -45,13 +45,13 @@ public class AlbumController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> updateAlbum(@PathVariable(name = "id") Long id, @Valid @RequestBody Album newAlbum, @CurrentUser UserPrincipal currentUser){
         return albumService.updateAlbum(id, newAlbum, currentUser);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> deleteAlbum(@PathVariable(name = "id") Long id, @CurrentUser UserPrincipal currentUser){
         return albumService.deleteAlbum(id, currentUser);
     }
