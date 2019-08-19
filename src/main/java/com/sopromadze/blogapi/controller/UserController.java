@@ -57,7 +57,7 @@ public class UserController {
             @PathVariable(value = "username") String username,
             @RequestParam(value = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
             @RequestParam(value = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size){
-        return postService.getPostsCreatedBy(username, page, size);
+        return postService.getPostsByCreatedBy(username, page, size);
     }
 
     @GetMapping("/{username}/albums")

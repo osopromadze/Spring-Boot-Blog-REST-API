@@ -15,51 +15,53 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sopromadze.blogapi.model.category.Category;
+import com.sopromadze.blogapi.model.tag.Tag;
 import com.sopromadze.blogapi.payload.PagedResponse;
-import com.sopromadze.blogapi.payload.PhotoRequest;
-import com.sopromadze.blogapi.payload.PhotoResponse;
 import com.sopromadze.blogapi.security.CurrentUser;
 import com.sopromadze.blogapi.security.UserPrincipal;
-import com.sopromadze.blogapi.service.PhotoService;
+import com.sopromadze.blogapi.service.CategoryService;
+import com.sopromadze.blogapi.service.TagService;
 import com.sopromadze.blogapi.util.AppConstants;
 
 @RestController
-@RequestMapping("/api/photos")
-public class PhotoController {
-    private final PhotoService photoService;
+@RequestMapping("/api/tags")
+public class TagController {
+    private final TagService tagService;
 
     @Autowired
-    public PhotoController(PhotoService photoService) {
-        this.photoService = photoService;
+    public TagController(TagService tagService) {
+        this.tagService = tagService;
     }
 
     @GetMapping
-    public PagedResponse<PhotoResponse> getAllPhotos(
+    public PagedResponse<?> getAllTags(
             @RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
             @RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size){
-        return photoService.getAllPhotos(page, size);
+        return tagService.getAllTags(page, size);
     }
 
     @PostMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> addPhoto(@Valid @RequestBody PhotoRequest photoRequest, @CurrentUser UserPrincipal currentUser){
-        return photoService.addPhoto(photoRequest, currentUser);
+    public ResponseEntity<?> addTag(@Valid @RequestBody Tag tag, @CurrentUser UserPrincipal currentUser){
+        return tagService.addTag(tag, currentUser);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getPhoto(@PathVariable(name = "id") Long id){
-        return photoService.getPhoto(id);
+    public ResponseEntity<?> getTag(@PathVariable(name = "id") Long id){
+        return tagService.getTag(id);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> updatePhoto(@PathVariable(name = "id") Long id, @Valid @RequestBody PhotoRequest photoRequest, @CurrentUser UserPrincipal currentUser){
-        return photoService.updatePhoto(id, photoRequest, currentUser);
+    public ResponseEntity<?> updateTag(@PathVariable(name = "id") Long id, @Valid @RequestBody Tag tag, @CurrentUser UserPrincipal currentUser){
+        return tagService.updateTag(id, tag, currentUser);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> deletePhoto(@PathVariable(name = "id") Long id, @CurrentUser UserPrincipal currentUser){
-        return photoService.deletePhoto(id, currentUser);
+    public ResponseEntity<?> deleteTag(@PathVariable(name = "id") Long id, @CurrentUser UserPrincipal currentUser){
+        return tagService.deleteTag(id, currentUser);
     }
+
 }
