@@ -20,89 +20,88 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-    private final UserService userService;
-    private final PostService postService;
-    private final AlbumService albumService;
+	@Autowired
+	private UserService userService;
 
-    @Autowired
-    public UserController(UserService userService, PostService postService, AlbumService albumService) {
-        this.userService = userService;
-        this.postService = postService;
-        this.albumService = albumService;
-    }
+	@Autowired
+	private PostService postService;
 
-    @GetMapping("/me")
-    @PreAuthorize("hasRole('USER')")
-    public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser){
-        return userService.getCurrentUser(currentUser);
-    }
+	@Autowired
+	private AlbumService albumService;
 
-    @GetMapping("/checkUsernameAvailability")
-    public UserIdentityAvailability checkUsernameAvailability(@RequestParam(value = "username") String username){
-        return userService.checkUsernameAvailability(username);
-    }
+	@GetMapping("/me")
+	@PreAuthorize("hasRole('USER')")
+	public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {
+		return userService.getCurrentUser(currentUser);
+	}
 
-    @GetMapping("/checkEmailAvailability")
-    public UserIdentityAvailability checkEmailAvailability(@RequestParam(value = "email") String email){
-        return userService.checkEmailAvailability(email);
-    }
+	@GetMapping("/checkUsernameAvailability")
+	public UserIdentityAvailability checkUsernameAvailability(@RequestParam(value = "username") String username) {
+		return userService.checkUsernameAvailability(username);
+	}
 
-    @GetMapping("/{username}/profile")
-    public UserProfile getUSerProfile(@PathVariable(value = "username") String username){
-        return userService.getUserProfile(username);
-    }
+	@GetMapping("/checkEmailAvailability")
+	public UserIdentityAvailability checkEmailAvailability(@RequestParam(value = "email") String email) {
+		return userService.checkEmailAvailability(email);
+	}
 
-    @GetMapping("/{username}/posts")
-    public PagedResponse<Post> getPostsCreatedBy(
-            @PathVariable(value = "username") String username,
-            @RequestParam(value = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
-            @RequestParam(value = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size){
-        return postService.getPostsByCreatedBy(username, page, size);
-    }
+	@GetMapping("/{username}/profile")
+	public UserProfile getUSerProfile(@PathVariable(value = "username") String username) {
+		return userService.getUserProfile(username);
+	}
 
-    @GetMapping("/{username}/albums")
-    public PagedResponse<Album> getUserAlbums(
-            @PathVariable(name = "username") String username,
-            @RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
-            @RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size){
+	@GetMapping("/{username}/posts")
+	public PagedResponse<Post> getPostsCreatedBy(@PathVariable(value = "username") String username,
+			@RequestParam(value = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
+			@RequestParam(value = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
+		return postService.getPostsByCreatedBy(username, page, size);
+	}
 
-        return albumService.getUserAlbums(username, page, size);
-    }
+	@GetMapping("/{username}/albums")
+	public PagedResponse<Album> getUserAlbums(@PathVariable(name = "username") String username,
+			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
+			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
 
-    @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> addUser(@Valid @RequestBody User user){
-        return userService.addUser(user);
-    }
+		return albumService.getUserAlbums(username, page, size);
+	}
 
-    @PutMapping("/{username}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> updateUser(@Valid @RequestBody User newUser, @PathVariable(value = "username") String username, @CurrentUser UserPrincipal currentUser){
-        return userService.updateUser(newUser, username, currentUser);
-    }
+	@PostMapping
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> addUser(@Valid @RequestBody User user) {
+		return userService.addUser(user);
+	}
 
-    @DeleteMapping("/{username}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> deleteUser(@PathVariable(value = "username") String username, @CurrentUser UserPrincipal currentUser){
-        return userService.deleteUser(username, currentUser);
-    }
+	@PutMapping("/{username}")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	public ResponseEntity<?> updateUser(@Valid @RequestBody User newUser,
+			@PathVariable(value = "username") String username, @CurrentUser UserPrincipal currentUser) {
+		return userService.updateUser(newUser, username, currentUser);
+	}
 
-    @PutMapping("/{username}/giveAdmin")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> giveAdmin(@PathVariable(name = "username") String username){
-        return userService.giveAdmin(username);
-    }
+	@DeleteMapping("/{username}")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	public ResponseEntity<?> deleteUser(@PathVariable(value = "username") String username,
+			@CurrentUser UserPrincipal currentUser) {
+		return userService.deleteUser(username, currentUser);
+	}
 
-    @PutMapping("/{username}/takeAdmin")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> takeAdmin(@PathVariable(name = "username") String username){
-        return userService.takeAdmin(username);
-    }
+	@PutMapping("/{username}/giveAdmin")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> giveAdmin(@PathVariable(name = "username") String username) {
+		return userService.giveAdmin(username);
+	}
 
-    @PutMapping("/setOrUpdateInfo")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> setAddress(@CurrentUser UserPrincipal currentUser, @Valid @RequestBody InfoRequest infoRequest){
-        return userService.setOrUpdateInfo(currentUser, infoRequest);
-    }
+	@PutMapping("/{username}/takeAdmin")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> takeAdmin(@PathVariable(name = "username") String username) {
+		return userService.takeAdmin(username);
+	}
+
+	@PutMapping("/setOrUpdateInfo")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	public ResponseEntity<?> setAddress(@CurrentUser UserPrincipal currentUser,
+			@Valid @RequestBody InfoRequest infoRequest) {
+		return userService.setOrUpdateInfo(currentUser, infoRequest);
+	}
 
 }

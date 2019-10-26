@@ -6,22 +6,20 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.sopromadze.blogapi.model.tag.Tag;
-
 public class PostRequest {
 
-    @NotBlank
-    @Size(min = 10)
-    private String title;
+	@NotBlank
+	@Size(min = 10)
+	private String title;
 
-    @NotBlank
-    @Size(min = 50)
-    private String body;
+	@NotBlank
+	@Size(min = 50)
+	private String body;
 
-    @NotNull
-    private Long categoryId;
-    
-    private List<String> tags;
+	@NotNull
+	private Long categoryId;
+
+	private List<String> tags;
 
 	public String getTitle() {
 		return title;

@@ -25,12 +25,8 @@ import com.sopromadze.blogapi.util.AppConstants;
 @RestController
 @RequestMapping("/api/categories")
 public class CategoryController {
-    private final CategoryService categoryService;
-
-    @Autowired
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
+	@Autowired
+    private CategoryService categoryService;
 
     @GetMapping
     public PagedResponse<?> getAllCategories(

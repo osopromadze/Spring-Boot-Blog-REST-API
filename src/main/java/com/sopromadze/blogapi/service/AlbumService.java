@@ -25,14 +25,11 @@ import java.util.Collections;
 
 @Service
 public class AlbumService {
-    private final AlbumRepository albumRepository;
-    private final UserRepository userRepository;
-
-    @Autowired
-    public AlbumService(AlbumRepository albumRepository, UserRepository userRepository) {
-        this.albumRepository = albumRepository;
-        this.userRepository = userRepository;
-    }
+	@Autowired
+    private AlbumRepository albumRepository;
+	
+	@Autowired
+    private UserRepository userRepository;
 
     public PagedResponse<Album> getAllAlbums(int page, int size){
         validatePageNumberAndSize(page, size);

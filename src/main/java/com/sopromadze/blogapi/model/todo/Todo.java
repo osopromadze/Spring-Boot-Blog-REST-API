@@ -1,65 +1,72 @@
 package com.sopromadze.blogapi.model.todo;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotBlank;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopromadze.blogapi.model.audit.UserDateAudit;
 import com.sopromadze.blogapi.model.user.User;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-
 @Entity
-@Table(name = "todos", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {
-                "title"
-        })
-})
+@Table(name = "todos", uniqueConstraints = { @UniqueConstraint(columnNames = { "title" }) })
 public class Todo extends UserDateAudit {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	private static final long serialVersionUID = 1L;
 
-    @NotBlank
-    @Column(name = "title")
-    private String title;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Column(name = "completed")
-    private Boolean completed;
+	@NotBlank
+	@Column(name = "title")
+	private String title;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+	@Column(name = "completed")
+	private Boolean completed;
 
-    public Long getId() {
-        return id;
-    }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id")
+	private User user;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getTitle() {
-        return title;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+	public String getTitle() {
+		return title;
+	}
 
-    public Boolean getCompleted() {
-        return completed;
-    }
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
-    public void setCompleted(Boolean completed) {
-        this.completed = completed;
-    }
+	public Boolean getCompleted() {
+		return completed;
+	}
 
-    @JsonIgnore
-    public User getUser() {
-        return user;
-    }
+	public void setCompleted(Boolean completed) {
+		this.completed = completed;
+	}
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+	@JsonIgnore
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 }

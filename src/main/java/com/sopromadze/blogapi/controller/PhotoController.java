@@ -26,40 +26,38 @@ import com.sopromadze.blogapi.util.AppConstants;
 @RestController
 @RequestMapping("/api/photos")
 public class PhotoController {
-    private final PhotoService photoService;
+	@Autowired
+	private PhotoService photoService;
 
-    @Autowired
-    public PhotoController(PhotoService photoService) {
-        this.photoService = photoService;
-    }
+	@GetMapping
+	public PagedResponse<PhotoResponse> getAllPhotos(
+			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
+			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
+		return photoService.getAllPhotos(page, size);
+	}
 
-    @GetMapping
-    public PagedResponse<PhotoResponse> getAllPhotos(
-            @RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
-            @RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size){
-        return photoService.getAllPhotos(page, size);
-    }
+	@PostMapping
+	@PreAuthorize("hasRole('USER')")
+	public ResponseEntity<?> addPhoto(@Valid @RequestBody PhotoRequest photoRequest,
+			@CurrentUser UserPrincipal currentUser) {
+		return photoService.addPhoto(photoRequest, currentUser);
+	}
 
-    @PostMapping
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> addPhoto(@Valid @RequestBody PhotoRequest photoRequest, @CurrentUser UserPrincipal currentUser){
-        return photoService.addPhoto(photoRequest, currentUser);
-    }
+	@GetMapping("/{id}")
+	public ResponseEntity<?> getPhoto(@PathVariable(name = "id") Long id) {
+		return photoService.getPhoto(id);
+	}
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getPhoto(@PathVariable(name = "id") Long id){
-        return photoService.getPhoto(id);
-    }
+	@PutMapping("/{id}")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	public ResponseEntity<?> updatePhoto(@PathVariable(name = "id") Long id,
+			@Valid @RequestBody PhotoRequest photoRequest, @CurrentUser UserPrincipal currentUser) {
+		return photoService.updatePhoto(id, photoRequest, currentUser);
+	}
 
-    @PutMapping("/{id}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> updatePhoto(@PathVariable(name = "id") Long id, @Valid @RequestBody PhotoRequest photoRequest, @CurrentUser UserPrincipal currentUser){
-        return photoService.updatePhoto(id, photoRequest, currentUser);
-    }
-
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> deletePhoto(@PathVariable(name = "id") Long id, @CurrentUser UserPrincipal currentUser){
-        return photoService.deletePhoto(id, currentUser);
-    }
+	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	public ResponseEntity<?> deletePhoto(@PathVariable(name = "id") Long id, @CurrentUser UserPrincipal currentUser) {
+		return photoService.deletePhoto(id, currentUser);
+	}
 }

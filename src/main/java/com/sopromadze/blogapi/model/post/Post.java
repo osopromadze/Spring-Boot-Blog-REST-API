@@ -30,6 +30,8 @@ import com.sopromadze.blogapi.model.user.User;
 @Table(name = "posts", uniqueConstraints = { @UniqueConstraint(columnNames = { "title" }) })
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Post extends UserDateAudit {
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

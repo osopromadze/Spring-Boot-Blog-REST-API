@@ -17,14 +17,11 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/albums")
 public class AlbumController {
-    private final AlbumService albumService;
-    private final PhotoService photoService;
-
-    @Autowired
-    public AlbumController(AlbumService albumService, PhotoService photoService) {
-        this.albumService = albumService;
-        this.photoService = photoService;
-    }
+	@Autowired
+    private AlbumService albumService;
+	
+	@Autowired
+    private PhotoService photoService;
 
     @GetMapping
     public PagedResponse<Album> getAllAlbums(

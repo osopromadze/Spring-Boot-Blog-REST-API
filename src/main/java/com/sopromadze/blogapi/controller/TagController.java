@@ -15,24 +15,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sopromadze.blogapi.model.category.Category;
 import com.sopromadze.blogapi.model.tag.Tag;
 import com.sopromadze.blogapi.payload.PagedResponse;
 import com.sopromadze.blogapi.security.CurrentUser;
 import com.sopromadze.blogapi.security.UserPrincipal;
-import com.sopromadze.blogapi.service.CategoryService;
 import com.sopromadze.blogapi.service.TagService;
 import com.sopromadze.blogapi.util.AppConstants;
 
 @RestController
 @RequestMapping("/api/tags")
 public class TagController {
-    private final TagService tagService;
-
-    @Autowired
-    public TagController(TagService tagService) {
-        this.tagService = tagService;
-    }
+	@Autowired
+    private TagService tagService;
 
     @GetMapping
     public PagedResponse<?> getAllTags(

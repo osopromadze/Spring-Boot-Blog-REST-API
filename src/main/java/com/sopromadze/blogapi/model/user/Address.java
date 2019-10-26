@@ -1,143 +1,154 @@
 package com.sopromadze.blogapi.model.user;
 
+import java.time.Instant;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopromadze.blogapi.model.audit.UserDateAudit;
-
-import javax.persistence.*;
-import java.time.Instant;
 
 @Entity
 @Table(name = "address")
 public class Address extends UserDateAudit {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	private static final long serialVersionUID = 1L;
 
-    @Column(name = "street")
-    private String street;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Column(name = "suite")
-    private String suite;
+	@Column(name = "street")
+	private String street;
 
-    @Column(name = "city")
-    private String city;
+	@Column(name = "suite")
+	private String suite;
 
-    @Column(name = "zipcode")
-    private String zipcode;
+	@Column(name = "city")
+	private String city;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "geo_id")
-    private Geo geo;
+	@Column(name = "zipcode")
+	private String zipcode;
 
-    @OneToOne(mappedBy = "address")
-    private User user;
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "geo_id")
+	private Geo geo;
 
-    public Address(){
+	@OneToOne(mappedBy = "address")
+	private User user;
 
-    }
+	public Address() {
 
-    public Address(String street, String suite, String city, String zipcode, Geo geo) {
-        this.street = street;
-        this.suite = suite;
-        this.city = city;
-        this.zipcode = zipcode;
-        this.geo = geo;
-    }
+	}
 
-    public String getStreet() {
-        return street;
-    }
+	public Address(String street, String suite, String city, String zipcode, Geo geo) {
+		this.street = street;
+		this.suite = suite;
+		this.city = city;
+		this.zipcode = zipcode;
+		this.geo = geo;
+	}
 
-    public void setStreet(String street) {
-        this.street = street;
-    }
+	public String getStreet() {
+		return street;
+	}
 
-    public String getSuite() {
-        return suite;
-    }
+	public void setStreet(String street) {
+		this.street = street;
+	}
 
-    public void setSuite(String suite) {
-        this.suite = suite;
-    }
+	public String getSuite() {
+		return suite;
+	}
 
-    public String getCity() {
-        return city;
-    }
+	public void setSuite(String suite) {
+		this.suite = suite;
+	}
 
-    public void setCity(String city) {
-        this.city = city;
-    }
+	public String getCity() {
+		return city;
+	}
 
-    public String getZipcode() {
-        return zipcode;
-    }
+	public void setCity(String city) {
+		this.city = city;
+	}
 
-    public void setZipcode(String zipcode) {
-        this.zipcode = zipcode;
-    }
+	public String getZipcode() {
+		return zipcode;
+	}
 
-    @JsonIgnore
-    public Long getId() {
-        return id;
-    }
+	public void setZipcode(String zipcode) {
+		this.zipcode = zipcode;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	@JsonIgnore
+	public Long getId() {
+		return id;
+	}
 
-    public Geo getGeo() {
-        return geo;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setGeo(Geo geo) {
-        this.geo = geo;
-    }
+	public Geo getGeo() {
+		return geo;
+	}
 
-    @JsonIgnore
-    @Override
-    public Long getCreatedBy() {
-        return super.getCreatedBy();
-    }
+	public void setGeo(Geo geo) {
+		this.geo = geo;
+	}
 
-    @JsonIgnore
-    @Override
-    public void setCreatedBy(Long createdBy) {
-        super.setCreatedBy(createdBy);
-    }
+	@JsonIgnore
+	@Override
+	public Long getCreatedBy() {
+		return super.getCreatedBy();
+	}
 
-    @JsonIgnore
-    @Override
-    public Long getUpdatedBy() {
-        return super.getUpdatedBy();
-    }
+	@JsonIgnore
+	@Override
+	public void setCreatedBy(Long createdBy) {
+		super.setCreatedBy(createdBy);
+	}
 
-    @JsonIgnore
-    @Override
-    public void setUpdatedBy(Long updatedBy) {
-        super.setUpdatedBy(updatedBy);
-    }
+	@JsonIgnore
+	@Override
+	public Long getUpdatedBy() {
+		return super.getUpdatedBy();
+	}
 
-    @JsonIgnore
-    @Override
-    public Instant getCreatedAt() {
-        return super.getCreatedAt();
-    }
+	@JsonIgnore
+	@Override
+	public void setUpdatedBy(Long updatedBy) {
+		super.setUpdatedBy(updatedBy);
+	}
 
-    @JsonIgnore
-    @Override
-    public void setCreatedAt(Instant createdAt) {
-        super.setCreatedAt(createdAt);
-    }
+	@JsonIgnore
+	@Override
+	public Instant getCreatedAt() {
+		return super.getCreatedAt();
+	}
 
-    @JsonIgnore
-    @Override
-    public Instant getUpdatedAt() {
-        return super.getUpdatedAt();
-    }
+	@JsonIgnore
+	@Override
+	public void setCreatedAt(Instant createdAt) {
+		super.setCreatedAt(createdAt);
+	}
 
-    @JsonIgnore
-    @Override
-    public void setUpdatedAt(Instant updatedAt) {
-        super.setUpdatedAt(updatedAt);
-    }
+	@JsonIgnore
+	@Override
+	public Instant getUpdatedAt() {
+		return super.getUpdatedAt();
+	}
+
+	@JsonIgnore
+	@Override
+	public void setUpdatedAt(Instant updatedAt) {
+		super.setUpdatedAt(updatedAt);
+	}
 }

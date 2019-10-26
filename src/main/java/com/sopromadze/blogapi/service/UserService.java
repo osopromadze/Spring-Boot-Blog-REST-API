@@ -25,126 +25,149 @@ import java.util.List;
 
 @Service
 public class UserService {
-    private final UserRepository userRepository;
-    private final PostRepository postRepository;
-    private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
+	@Autowired
+	private UserRepository userRepository;
 
-    @Autowired
-    public UserService(UserRepository userRepository, PostRepository postRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.postRepository = postRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+	@Autowired
+	private PostRepository postRepository;
 
-    public UserSummary getCurrentUser(UserPrincipal currentUser){
-        return new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getFirstName(), currentUser.getLastName());
-    }
+	@Autowired
+	private RoleRepository roleRepository;
 
-    public UserIdentityAvailability checkUsernameAvailability(String username){
-        Boolean isAvailable = !userRepository.existsByUsername(username);
-        return new UserIdentityAvailability(isAvailable);
-    }
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
-    public UserIdentityAvailability checkEmailAvailability(String email){
-        Boolean isAvailable = !userRepository.existsByEmail(email);
-        return new UserIdentityAvailability(isAvailable);
-    }
+	public UserSummary getCurrentUser(UserPrincipal currentUser) {
+		return new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getFirstName(),
+				currentUser.getLastName());
+	}
 
-    public UserProfile getUserProfile(String username){
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
+	public UserIdentityAvailability checkUsernameAvailability(String username) {
+		Boolean isAvailable = !userRepository.existsByUsername(username);
+		return new UserIdentityAvailability(isAvailable);
+	}
 
-        Long postCount = postRepository.countByCreatedBy(user.getId());
+	public UserIdentityAvailability checkEmailAvailability(String email) {
+		Boolean isAvailable = !userRepository.existsByEmail(email);
+		return new UserIdentityAvailability(isAvailable);
+	}
 
-        return new UserProfile(user.getId(), user.getUsername(), user.getFirstName(), user.getLastName(), user.getCreatedAt(), user.getEmail(), user.getAddress(), user.getPhone(), user.getWebsite(), user.getCompany(), postCount);
-    }
+	public UserProfile getUserProfile(String username) {
+		User user = userRepository.findByUsername(username)
+				.orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
 
-    public ResponseEntity<?> addUser(User user){
-        if(userRepository.existsByUsername(user.getUsername())){
-            return new ResponseEntity<>(new ApiResponse(false, "Username is already taken"), HttpStatus.BAD_REQUEST);
-        }
+		Long postCount = postRepository.countByCreatedBy(user.getId());
 
-        if(userRepository.existsByEmail(user.getEmail())){
-            return new ResponseEntity<>(new ApiResponse(false, "Email is already taken"), HttpStatus.BAD_REQUEST);
-        }
+		return new UserProfile(user.getId(), user.getUsername(), user.getFirstName(), user.getLastName(),
+				user.getCreatedAt(), user.getEmail(), user.getAddress(), user.getPhone(), user.getWebsite(),
+				user.getCompany(), postCount);
+	}
 
-        List<Role> roles = new ArrayList<>();
-        roles.add(roleRepository.findByName(RoleName.ROLE_USER).orElseThrow(() -> new AppException("User role not set")));
-        user.setRoles(roles);
+	public ResponseEntity<?> addUser(User user) {
+		if (userRepository.existsByUsername(user.getUsername())) {
+			return new ResponseEntity<>(new ApiResponse(false, "Username is already taken"), HttpStatus.BAD_REQUEST);
+		}
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        User result =  userRepository.save(user);
-        return new ResponseEntity<>(result, HttpStatus.CREATED);
-    }
+		if (userRepository.existsByEmail(user.getEmail())) {
+			return new ResponseEntity<>(new ApiResponse(false, "Email is already taken"), HttpStatus.BAD_REQUEST);
+		}
 
-    public ResponseEntity<?> updateUser(User newUser, String username, UserPrincipal currentUser){
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
-        if(user.getId().equals(currentUser.getId()) || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))){
-            user.setFirstName(newUser.getFirstName());
-            user.setLastName(newUser.getLastName());
-            user.setPassword(passwordEncoder.encode(newUser.getPassword()));
-            user.setAddress(newUser.getAddress());
-            user.setPhone(newUser.getPhone());
-            user.setWebsite(newUser.getWebsite());
-            user.setCompany(newUser.getCompany());
+		List<Role> roles = new ArrayList<>();
+		roles.add(
+				roleRepository.findByName(RoleName.ROLE_USER).orElseThrow(() -> new AppException("User role not set")));
+		user.setRoles(roles);
 
-            User updatedUser =  userRepository.save(user);
-            return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		User result = userRepository.save(user);
+		return new ResponseEntity<>(result, HttpStatus.CREATED);
+	}
 
-        }
+	public ResponseEntity<?> updateUser(User newUser, String username, UserPrincipal currentUser) {
+		User user = userRepository.findByUsername(username)
+				.orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
+		if (user.getId().equals(currentUser.getId())
+				|| currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
+			user.setFirstName(newUser.getFirstName());
+			user.setLastName(newUser.getLastName());
+			user.setPassword(passwordEncoder.encode(newUser.getPassword()));
+			user.setAddress(newUser.getAddress());
+			user.setPhone(newUser.getPhone());
+			user.setWebsite(newUser.getWebsite());
+			user.setCompany(newUser.getCompany());
 
-        return new ResponseEntity<>(new ApiResponse(false, "You don't have permission to update profile of: " + username), HttpStatus.UNAUTHORIZED);
+			User updatedUser = userRepository.save(user);
+			return new ResponseEntity<>(updatedUser, HttpStatus.OK);
 
-    }
+		}
 
-    public ResponseEntity<?> deleteUser(String username, UserPrincipal currentUser){
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User", "id", username));
-        if(!user.getId().equals(currentUser.getId())){
-            return new ResponseEntity<>(new ApiResponse(false, "You don't have permission to delete profile of: " + username), HttpStatus.UNAUTHORIZED);
-        }
-        userRepository.deleteById(user.getId());
+		return new ResponseEntity<>(
+				new ApiResponse(false, "You don't have permission to update profile of: " + username),
+				HttpStatus.UNAUTHORIZED);
 
-        return new ResponseEntity<>(new ApiResponse(true, "You successfully deleted profile of: " + username), HttpStatus.OK);
-    }
+	}
 
-    public ResponseEntity<?> giveAdmin(String username){
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
-        List<Role> roles = new ArrayList<>();
-        roles.add(roleRepository.findByName(RoleName.ROLE_ADMIN).orElseThrow(() -> new AppException("User role not set")));
-        roles.add(roleRepository.findByName(RoleName.ROLE_USER).orElseThrow(() -> new AppException("User role not set")));
-        user.setRoles(roles);
-        userRepository.save(user);
-        return new ResponseEntity<>(new ApiResponse(true, "You gave ADMIN role to user: " + username), HttpStatus.OK);
-    }
+	public ResponseEntity<?> deleteUser(String username, UserPrincipal currentUser) {
+		User user = userRepository.findByUsername(username)
+				.orElseThrow(() -> new ResourceNotFoundException("User", "id", username));
+		if (!user.getId().equals(currentUser.getId())) {
+			return new ResponseEntity<>(
+					new ApiResponse(false, "You don't have permission to delete profile of: " + username),
+					HttpStatus.UNAUTHORIZED);
+		}
+		userRepository.deleteById(user.getId());
 
-    public ResponseEntity<?> takeAdmin(String username){
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
-        List<Role> roles = new ArrayList<>();
-        roles.add(roleRepository.findByName(RoleName.ROLE_USER).orElseThrow(() -> new AppException("User role not set")));
-        user.setRoles(roles);
-        userRepository.save(user);
-        return new ResponseEntity<>(new ApiResponse(true, "You took ADMIN role from user: " + username), HttpStatus.OK);
-    }
+		return new ResponseEntity<>(new ApiResponse(true, "You successfully deleted profile of: " + username),
+				HttpStatus.OK);
+	}
 
-    public ResponseEntity<?> setOrUpdateInfo(UserPrincipal currentUser, InfoRequest infoRequest) {
-        User user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow(() -> new ResourceNotFoundException("User", "username", currentUser.getUsername()));
-        Geo geo = new Geo(infoRequest.getLat(), infoRequest.getLng());
-        Address address = new Address(infoRequest.getStreet(), infoRequest.getSuite(), infoRequest.getCity(), infoRequest.getZipcode(), geo);
-        Company company = new Company(infoRequest.getCompanyName(), infoRequest.getCatchPhrase(), infoRequest.getBs());
-        if (user.getId().equals(currentUser.getId()) || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))){
-            user.setAddress(address);
-            user.setCompany(company);
-            user.setWebsite(infoRequest.getWebsite());
-            user.setPhone(infoRequest.getPhone());
-            User updatedUser = userRepository.save(user);
+	public ResponseEntity<?> giveAdmin(String username) {
+		User user = userRepository.findByUsername(username)
+				.orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
+		List<Role> roles = new ArrayList<>();
+		roles.add(roleRepository.findByName(RoleName.ROLE_ADMIN)
+				.orElseThrow(() -> new AppException("User role not set")));
+		roles.add(
+				roleRepository.findByName(RoleName.ROLE_USER).orElseThrow(() -> new AppException("User role not set")));
+		user.setRoles(roles);
+		userRepository.save(user);
+		return new ResponseEntity<>(new ApiResponse(true, "You gave ADMIN role to user: " + username), HttpStatus.OK);
+	}
 
-            Long postCount = postRepository.countByCreatedBy(updatedUser.getId());
+	public ResponseEntity<?> takeAdmin(String username) {
+		User user = userRepository.findByUsername(username)
+				.orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
+		List<Role> roles = new ArrayList<>();
+		roles.add(
+				roleRepository.findByName(RoleName.ROLE_USER).orElseThrow(() -> new AppException("User role not set")));
+		user.setRoles(roles);
+		userRepository.save(user);
+		return new ResponseEntity<>(new ApiResponse(true, "You took ADMIN role from user: " + username), HttpStatus.OK);
+	}
 
+	public ResponseEntity<?> setOrUpdateInfo(UserPrincipal currentUser, InfoRequest infoRequest) {
+		User user = userRepository.findByUsername(currentUser.getUsername())
+				.orElseThrow(() -> new ResourceNotFoundException("User", "username", currentUser.getUsername()));
+		Geo geo = new Geo(infoRequest.getLat(), infoRequest.getLng());
+		Address address = new Address(infoRequest.getStreet(), infoRequest.getSuite(), infoRequest.getCity(),
+				infoRequest.getZipcode(), geo);
+		Company company = new Company(infoRequest.getCompanyName(), infoRequest.getCatchPhrase(), infoRequest.getBs());
+		if (user.getId().equals(currentUser.getId())
+				|| currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
+			user.setAddress(address);
+			user.setCompany(company);
+			user.setWebsite(infoRequest.getWebsite());
+			user.setPhone(infoRequest.getPhone());
+			User updatedUser = userRepository.save(user);
 
-            UserProfile userProfile = new UserProfile(updatedUser.getId(), updatedUser.getUsername(), updatedUser.getFirstName(), updatedUser.getLastName(), updatedUser.getCreatedAt(), updatedUser.getEmail(), updatedUser.getAddress(), updatedUser.getPhone(), updatedUser.getWebsite(), updatedUser.getCompany(), postCount);
-            return new ResponseEntity<>(userProfile, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(new ApiResponse(false, "You don't have permission to update users profile"), HttpStatus.OK);
-    }
+			Long postCount = postRepository.countByCreatedBy(updatedUser.getId());
+
+			UserProfile userProfile = new UserProfile(updatedUser.getId(), updatedUser.getUsername(),
+					updatedUser.getFirstName(), updatedUser.getLastName(), updatedUser.getCreatedAt(),
+					updatedUser.getEmail(), updatedUser.getAddress(), updatedUser.getPhone(), updatedUser.getWebsite(),
+					updatedUser.getCompany(), postCount);
+			return new ResponseEntity<>(userProfile, HttpStatus.OK);
+		}
+		return new ResponseEntity<>(new ApiResponse(false, "You don't have permission to update users profile"),
+				HttpStatus.OK);
+	}
 }

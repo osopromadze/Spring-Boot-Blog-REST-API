@@ -1,124 +1,120 @@
 package com.sopromadze.blogapi.payload;
 
-import org.hibernate.validator.constraints.URL;
-import org.modelmapper.internal.bytebuddy.agent.builder.AgentBuilder;
-
-import javax.validation.GroupSequence;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 public class InfoRequest {
-    @NotBlank
-    private String street;
 
-    @NotBlank
-    private String suite;
+	@NotBlank
+	private String street;
 
-    @NotBlank
-    private String city;
+	@NotBlank
+	private String suite;
 
-    @NotBlank
-    private String zipcode;
+	@NotBlank
+	private String city;
 
-    private String companyName;
+	@NotBlank
+	private String zipcode;
 
-    private String catchPhrase;
+	private String companyName;
 
-    private String bs;
+	private String catchPhrase;
 
-    private String website;
+	private String bs;
 
-    private String phone;
+	private String website;
 
-    private String lat;
+	private String phone;
 
-    private String lng;
+	private String lat;
 
-    public String getStreet() {
-        return street;
-    }
+	private String lng;
 
-    public void setStreet(String street) {
-        this.street = street;
-    }
+	public String getStreet() {
+		return street;
+	}
 
-    public String getSuite() {
-        return suite;
-    }
+	public void setStreet(String street) {
+		this.street = street;
+	}
 
-    public void setSuite(String suite) {
-        this.suite = suite;
-    }
+	public String getSuite() {
+		return suite;
+	}
 
-    public String getCity() {
-        return city;
-    }
+	public void setSuite(String suite) {
+		this.suite = suite;
+	}
 
-    public void setCity(String city) {
-        this.city = city;
-    }
+	public String getCity() {
+		return city;
+	}
 
-    public String getZipcode() {
-        return zipcode;
-    }
+	public void setCity(String city) {
+		this.city = city;
+	}
 
-    public void setZipcode(String zipcode) {
-        this.zipcode = zipcode;
-    }
+	public String getZipcode() {
+		return zipcode;
+	}
 
-    public String getLat() {
-        return lat;
-    }
+	public void setZipcode(String zipcode) {
+		this.zipcode = zipcode;
+	}
 
-    public void setLat(String lat) {
-        this.lat = lat;
-    }
+	public String getLat() {
+		return lat;
+	}
 
-    public String getLng() {
-        return lng;
-    }
+	public void setLat(String lat) {
+		this.lat = lat;
+	}
 
-    public void setLng(String lng) {
-        this.lng = lng;
-    }
+	public String getLng() {
+		return lng;
+	}
 
-    public String getCompanyName() {
-        return companyName;
-    }
+	public void setLng(String lng) {
+		this.lng = lng;
+	}
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
+	public String getCompanyName() {
+		return companyName;
+	}
 
-    public String getCatchPhrase() {
-        return catchPhrase;
-    }
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
 
-    public void setCatchPhrase(String catchPhrase) {
-        this.catchPhrase = catchPhrase;
-    }
+	public String getCatchPhrase() {
+		return catchPhrase;
+	}
 
-    public String getBs() {
-        return bs;
-    }
+	public void setCatchPhrase(String catchPhrase) {
+		this.catchPhrase = catchPhrase;
+	}
 
-    public void setBs(String bs) {
-        this.bs = bs;
-    }
+	public String getBs() {
+		return bs;
+	}
 
-    public String getWebsite() {
-        return website;
-    }
+	public void setBs(String bs) {
+		this.bs = bs;
+	}
 
-    public void setWebsite(String website) {
-        this.website = website;
-    }
+	public String getWebsite() {
+		return website;
+	}
 
-    public String getPhone() {
-        return phone;
-    }
+	public void setWebsite(String website) {
+		this.website = website;
+	}
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
 }

@@ -33,77 +33,73 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-    private final AuthenticationManager authenticationManager;
+	@Autowired
+	private AuthenticationManager authenticationManager;
 
-    private final UserRepository userRepository;
+	@Autowired
+	private UserRepository userRepository;
 
-    private final RoleRepository roleRepository;
+	@Autowired
+	private RoleRepository roleRepository;
 
-    private final PasswordEncoder passwordEncoder;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
-    private final JwtTokenProvider jwtTokenProvider;
+	@Autowired
+	private JwtTokenProvider jwtTokenProvider;
 
-    @Autowired
-    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
-        this.authenticationManager = authenticationManager;
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
+	@PostMapping("/signin")
+	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+		Authentication authentication = authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(loginRequest.getUsernameOrEmail(), loginRequest.getPassword()));
 
-    @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest){
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getUsernameOrEmail(),
-                        loginRequest.getPassword()
-                )
-        );
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+		String jwt = jwtTokenProvider.generateToken(authentication);
+		return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+	}
 
-        String jwt = jwtTokenProvider.generateToken(authentication);
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
-    }
+	@PostMapping("/signup")
+	public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
+		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+			return new ResponseEntity<>(new ApiResponse(false, "Username is already taken"), HttpStatus.BAD_REQUEST);
+		}
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest){
-        if(userRepository.existsByUsername(signUpRequest.getUsername())){
-            return new ResponseEntity<>(new ApiResponse(false, "Username is already taken"), HttpStatus.BAD_REQUEST);
-        }
+		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+			return new ResponseEntity<>(new ApiResponse(false, "Email is already taken"), HttpStatus.BAD_REQUEST);
+		}
+		String firstName = signUpRequest.getFirstName().substring(0, 1).toUpperCase()
+				+ signUpRequest.getFirstName().substring(1).toLowerCase();
 
-        if(userRepository.existsByEmail(signUpRequest.getEmail())){
-            return new ResponseEntity<>(new ApiResponse(false, "Email is already taken"), HttpStatus.BAD_REQUEST);
-        }
-        String firstName = signUpRequest.getFirstName().substring(0, 1).toUpperCase() + signUpRequest.getFirstName().substring(1).toLowerCase();
+		String lastName = signUpRequest.getLastName().substring(0, 1).toUpperCase()
+				+ signUpRequest.getLastName().substring(1).toLowerCase();
 
-        String lastName = signUpRequest.getLastName().substring(0, 1).toUpperCase() + signUpRequest.getLastName().substring(1).toLowerCase();
+		String username = signUpRequest.getUsername().toLowerCase();
 
-        String username = signUpRequest.getUsername().toLowerCase();
+		String email = signUpRequest.getEmail().toLowerCase();
 
-        String email = signUpRequest.getEmail().toLowerCase();
+		User user = new User(firstName, lastName, username, email, signUpRequest.getPassword());
 
-        User user = new User(firstName, lastName, username, email, signUpRequest.getPassword());
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+		List<Role> roles = new ArrayList<>();
+		if (userRepository.count() == 0) {
+			roles.add(roleRepository.findByName(RoleName.ROLE_USER)
+					.orElseThrow(() -> new AppException("User role not set")));
+			roles.add(roleRepository.findByName(RoleName.ROLE_ADMIN)
+					.orElseThrow(() -> new AppException("User role not set")));
+		} else {
+			roles.add(roleRepository.findByName(RoleName.ROLE_USER)
+					.orElseThrow(() -> new AppException("User role not set")));
+		}
 
-        List<Role> roles = new ArrayList<>();
-        if(userRepository.count() == 0){
-            roles.add(roleRepository.findByName(RoleName.ROLE_USER).orElseThrow(() -> new AppException("User role not set")));
-            roles.add(roleRepository.findByName(RoleName.ROLE_ADMIN).orElseThrow(() -> new AppException("User role not set")));
-        } else{
-            roles.add(roleRepository.findByName(RoleName.ROLE_USER).orElseThrow(() -> new AppException("User role not set")));
-        }
+		user.setRoles(roles);
 
-        user.setRoles(roles);
+		User result = userRepository.save(user);
 
-        User result = userRepository.save(user);
+		URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/users/{userId}")
+				.buildAndExpand(result.getId()).toUri();
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/api/users/{userId}")
-                .buildAndExpand(result.getId()).toUri();
-
-        return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
-    }
+		return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
+	}
 }
