@@ -31,8 +31,8 @@ import com.sopromadze.blogapi.repository.PostRepository;
 import com.sopromadze.blogapi.repository.TagRepository;
 import com.sopromadze.blogapi.repository.UserRepository;
 import com.sopromadze.blogapi.security.UserPrincipal;
-import com.sopromadze.blogapi.util.AppConstants;
-import com.sopromadze.blogapi.util.AppUtils;
+import com.sopromadze.blogapi.utils.AppConstants;
+import com.sopromadze.blogapi.utils.AppUtils;
 
 @Service
 public class PostService {

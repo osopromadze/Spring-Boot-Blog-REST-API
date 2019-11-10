@@ -23,7 +23,7 @@ import com.sopromadze.blogapi.repository.CommentRepository;
 import com.sopromadze.blogapi.repository.PostRepository;
 import com.sopromadze.blogapi.repository.UserRepository;
 import com.sopromadze.blogapi.security.UserPrincipal;
-import com.sopromadze.blogapi.util.AppConstants;
+import com.sopromadze.blogapi.utils.AppConstants;
 
 @Service
 public class CommentService {

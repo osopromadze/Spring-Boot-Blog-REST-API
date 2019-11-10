@@ -1,0 +1,2 @@
+mvn sonar:sonar -Dsonar.projectKey=blogapi -Dsonar.host.url=http://localhost:9000 -Dsonar.login=7ff764d856a132e81a3b26487b0032cd907e9d6f
+

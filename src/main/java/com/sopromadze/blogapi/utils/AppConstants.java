@@ -1,4 +1,4 @@
-package com.sopromadze.blogapi.util;
+package com.sopromadze.blogapi.utils;
 
 public interface AppConstants {
     String DEFAULT_PAGE_NUMBER = "0";

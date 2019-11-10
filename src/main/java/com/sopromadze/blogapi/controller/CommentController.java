@@ -20,7 +20,7 @@ import com.sopromadze.blogapi.payload.PagedResponse;
 import com.sopromadze.blogapi.security.CurrentUser;
 import com.sopromadze.blogapi.security.UserPrincipal;
 import com.sopromadze.blogapi.service.CommentService;
-import com.sopromadze.blogapi.util.AppConstants;
+import com.sopromadze.blogapi.utils.AppConstants;
 
 @RestController
 @RequestMapping("/api/posts/{postId}/comments")

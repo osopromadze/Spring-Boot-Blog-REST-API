@@ -26,7 +26,7 @@ import com.sopromadze.blogapi.payload.PhotoResponse;
 import com.sopromadze.blogapi.repository.AlbumRepository;
 import com.sopromadze.blogapi.repository.PhotoRepository;
 import com.sopromadze.blogapi.security.UserPrincipal;
-import com.sopromadze.blogapi.util.AppConstants;
+import com.sopromadze.blogapi.utils.AppConstants;
 
 @Service
 public class PhotoService {

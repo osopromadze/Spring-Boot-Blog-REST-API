@@ -1,16 +1,10 @@
 package com.sopromadze.blogapi.service;
 
-import com.sopromadze.blogapi.exception.BadRequestException;
-import com.sopromadze.blogapi.exception.ResourceNotFoundException;
-import com.sopromadze.blogapi.model.album.Album;
-import com.sopromadze.blogapi.model.role.RoleName;
-import com.sopromadze.blogapi.model.user.User;
-import com.sopromadze.blogapi.payload.ApiResponse;
-import com.sopromadze.blogapi.payload.PagedResponse;
-import com.sopromadze.blogapi.repository.AlbumRepository;
-import com.sopromadze.blogapi.repository.UserRepository;
-import com.sopromadze.blogapi.security.UserPrincipal;
-import com.sopromadze.blogapi.util.AppConstants;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,7 +15,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import com.sopromadze.blogapi.exception.BadRequestException;
+import com.sopromadze.blogapi.exception.ResourceNotFoundException;
+import com.sopromadze.blogapi.exception.ResponseEntityErrorException;
+import com.sopromadze.blogapi.model.album.Album;
+import com.sopromadze.blogapi.model.role.RoleName;
+import com.sopromadze.blogapi.model.user.User;
+import com.sopromadze.blogapi.payload.AlbumResponse;
+import com.sopromadze.blogapi.payload.ApiResponse;
+import com.sopromadze.blogapi.payload.PagedResponse;
+import com.sopromadze.blogapi.payload.request.AlbumRequest;
+import com.sopromadze.blogapi.repository.AlbumRepository;
+import com.sopromadze.blogapi.repository.UserRepository;
+import com.sopromadze.blogapi.security.UserPrincipal;
+import com.sopromadze.blogapi.utils.AppConstants;
 
 @Service
 public class AlbumService {
@@ -30,8 +37,12 @@ public class AlbumService {
 	
 	@Autowired
     private UserRepository userRepository;
+	
+	@Autowired
+	private ModelMapper modelMapper;
+	
 
-    public PagedResponse<Album> getAllAlbums(int page, int size){
+    public PagedResponse<AlbumResponse> getAllAlbums(int page, int size){
         validatePageNumberAndSize(page, size);
 
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
@@ -41,11 +52,19 @@ public class AlbumService {
         if (albums.getNumberOfElements() == 0){
             return new PagedResponse<>(Collections.emptyList(), albums.getNumber(), albums.getSize(), albums.getTotalElements(), albums.getTotalPages(), albums.isLast());
         }
-        return new PagedResponse<>(albums.getContent(), albums.getNumber(), albums.getSize(), albums.getTotalElements(), albums.getTotalPages(), albums.isLast());
+        
+        List<AlbumResponse> albumResponses = Arrays.asList(modelMapper.map(albums.getContent(), AlbumResponse[].class));
+        
+        return new PagedResponse<>(albumResponses, albums.getNumber(), albums.getSize(), albums.getTotalElements(), albums.getTotalPages(), albums.isLast());
     }
 
-    public ResponseEntity<?> addAlbum(Album album, UserPrincipal currentUser){
+    public ResponseEntity<Album> addAlbum(AlbumRequest albumRequest, UserPrincipal currentUser){
         User user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow(() -> new ResourceNotFoundException("User", "username", currentUser.getUsername()));
+        
+        Album album = new Album();
+        
+        modelMapper.map(albumRequest, album);
+        
         album.setUser(user);
         Album newAlbum =  albumRepository.save(album);
         return new ResponseEntity<>(newAlbum, HttpStatus.CREATED);
@@ -56,15 +75,21 @@ public class AlbumService {
         return new ResponseEntity<>(album, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> updateAlbum(Long id, Album newAlbum, UserPrincipal currentUser){
+    public ResponseEntity<AlbumResponse> updateAlbum(Long id, AlbumRequest newAlbum, UserPrincipal currentUser){
         Album album = albumRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Album", "id", id));
         User user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow(() -> new ResourceNotFoundException("User", "username", currentUser.getUsername()));
         if (album.getUser().getId().equals(user.getId()) || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))){
             album.setTitle(newAlbum.getTitle());
             Album updatedAlbum = albumRepository.save(album);
-            return new ResponseEntity<>(updatedAlbum, HttpStatus.OK);
+            
+            AlbumResponse albumResponse = new AlbumResponse();
+            
+            modelMapper.map(updatedAlbum, albumResponse);
+            
+            return new ResponseEntity<>(albumResponse, HttpStatus.OK);
         }
-        return new ResponseEntity<>(new ApiResponse(false, "You don't have permission to make this operation"), HttpStatus.UNAUTHORIZED);
+        
+        throw new ResponseEntityErrorException(new ResponseEntity<>(new ApiResponse(false, "You don't have permission to make this operation"), HttpStatus.UNAUTHORIZED));
     }
 
     public ResponseEntity<?> deleteAlbum(Long id, UserPrincipal currentUser){

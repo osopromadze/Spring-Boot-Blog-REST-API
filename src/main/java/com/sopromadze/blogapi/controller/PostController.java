@@ -21,7 +21,7 @@ import com.sopromadze.blogapi.payload.PostRequest;
 import com.sopromadze.blogapi.security.CurrentUser;
 import com.sopromadze.blogapi.security.UserPrincipal;
 import com.sopromadze.blogapi.service.PostService;
-import com.sopromadze.blogapi.util.AppConstants;
+import com.sopromadze.blogapi.utils.AppConstants;
 
 @RestController
 @RequestMapping("/api/posts")

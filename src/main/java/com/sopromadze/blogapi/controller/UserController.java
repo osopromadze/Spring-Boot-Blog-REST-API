@@ -9,7 +9,8 @@ import com.sopromadze.blogapi.security.UserPrincipal;
 import com.sopromadze.blogapi.service.AlbumService;
 import com.sopromadze.blogapi.service.PostService;
 import com.sopromadze.blogapi.service.UserService;
-import com.sopromadze.blogapi.util.AppConstants;
+import com.sopromadze.blogapi.utils.AppConstants;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

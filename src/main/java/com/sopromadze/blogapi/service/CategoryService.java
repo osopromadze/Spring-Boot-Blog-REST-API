@@ -20,7 +20,7 @@ import com.sopromadze.blogapi.payload.ApiResponse;
 import com.sopromadze.blogapi.payload.PagedResponse;
 import com.sopromadze.blogapi.repository.CategoryRepository;
 import com.sopromadze.blogapi.security.UserPrincipal;
-import com.sopromadze.blogapi.util.AppUtils;
+import com.sopromadze.blogapi.utils.AppUtils;
 
 @Service
 public class CategoryService {

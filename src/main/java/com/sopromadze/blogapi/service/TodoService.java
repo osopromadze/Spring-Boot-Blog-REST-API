@@ -20,7 +20,7 @@ import com.sopromadze.blogapi.payload.PagedResponse;
 import com.sopromadze.blogapi.repository.TodoRepository;
 import com.sopromadze.blogapi.repository.UserRepository;
 import com.sopromadze.blogapi.security.UserPrincipal;
-import com.sopromadze.blogapi.util.AppConstants;
+import com.sopromadze.blogapi.utils.AppConstants;
 
 @Service
 public class TodoService {

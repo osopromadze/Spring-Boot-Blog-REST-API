@@ -1,4 +1,4 @@
-package com.sopromadze.blogapi.util;
+package com.sopromadze.blogapi.utils;
 
 import com.sopromadze.blogapi.exception.BadRequestException;
 
