@@ -2,7 +2,7 @@ package com.sopromadze.blogapi.service;
 
 import org.springframework.http.ResponseEntity;
 
-import com.sopromadze.blogapi.exception.UnathorizedException;
+import com.sopromadze.blogapi.exception.UnauthorizedException;
 import com.sopromadze.blogapi.model.category.Category;
 import com.sopromadze.blogapi.payload.ApiResponse;
 import com.sopromadze.blogapi.payload.PagedResponse;
@@ -17,8 +17,8 @@ public interface CategoryService {
 	ResponseEntity<Category> addCategory(Category category, UserPrincipal currentUser);
 
 	ResponseEntity<Category> updateCategory(Long id, Category newCategory, UserPrincipal currentUser)
-			throws UnathorizedException;
+			throws UnauthorizedException;
 
-	ResponseEntity<ApiResponse> deleteCategory(Long id, UserPrincipal currentUser) throws UnathorizedException;
+	ResponseEntity<ApiResponse> deleteCategory(Long id, UserPrincipal currentUser) throws UnauthorizedException;
 
 }

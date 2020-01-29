@@ -34,17 +34,39 @@ public class RestControllerExceptionHandler {
 		return new ResponseEntity<>(apiResponse, status);
 	}
 	
-	@ExceptionHandler(UnathorizedException.class)
+	@ExceptionHandler(UnauthorizedException.class)
 	@ResponseBody
 	@ResponseStatus(code = HttpStatus.UNAUTHORIZED)
-	public ResponseEntity<ExceptionResponse> resolveException(UnathorizedException exception){
+	public ResponseEntity<ApiResponse> resolveException(UnauthorizedException exception){
 		
-		String message  = exception.getMessage();
-		List<String> messages = new ArrayList<>(1);
-		messages.add(message);
+		ApiResponse apiResponse = exception.getApiResponse();
 		
-		return new ResponseEntity<>(new ExceptionResponse(messages, HttpStatus.UNAUTHORIZED.getReasonPhrase(),
-				HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED);
+		return new ResponseEntity<>(apiResponse, HttpStatus.UNAUTHORIZED);
+	}
+	
+	@ExceptionHandler(BadRequestException.class)
+	@ResponseBody
+	public ResponseEntity<ApiResponse> resolveException(BadRequestException exception){
+		ApiResponse apiResponse = exception.getApiResponse();
+		
+		return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.BAD_REQUEST);
+	}
+	
+	
+	@ExceptionHandler(ResourceNotFoundException.class)
+	@ResponseBody
+	public ResponseEntity<ApiResponse> resolveException(ResourceNotFoundException exception){
+		ApiResponse apiResponse = exception.getApiResponse();
+		
+		return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.NOT_FOUND);
+	}
+	
+	@ExceptionHandler(AccessDeniedException.class)
+	@ResponseBody
+	public ResponseEntity<ApiResponse> resolveException(AccessDeniedException exception){
+		ApiResponse apiResponse = exception.getApiResponse();
+		
+		return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.FORBIDDEN);
 	}
 
 	@ExceptionHandler({ MethodArgumentNotValidException.class })

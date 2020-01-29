@@ -8,12 +8,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import com.sopromadze.blogapi.exception.ResourceNotFoundException;
+import com.sopromadze.blogapi.exception.UnauthorizedException;
 import com.sopromadze.blogapi.model.role.RoleName;
 import com.sopromadze.blogapi.model.tag.Tag;
 import com.sopromadze.blogapi.payload.ApiResponse;
@@ -43,36 +42,41 @@ public class TagServiceImpl implements TagService {
 	}
 	
 	@Override
-	public ResponseEntity<?> getTag(Long id){
+	public Tag getTag(Long id){
         Tag tag = tagRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Tag", "id", id));
-        return new ResponseEntity<>(tag, HttpStatus.OK);
+        return tag;
     }
 	
 	@Override
-	public ResponseEntity<?> addTag(Tag tag, UserPrincipal currentUser){
+	public Tag addTag(Tag tag, UserPrincipal currentUser){
         Tag newTag =  tagRepository.save(tag);
-        return new ResponseEntity<>(newTag, HttpStatus.CREATED);
+        return newTag;
     }
 	
 	@Override
-	public ResponseEntity<?> updateTag(Long id, Tag newTag, UserPrincipal currentUser){
+	public Tag updateTag(Long id, Tag newTag, UserPrincipal currentUser){
         Tag tag = tagRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Tag", "id", id));
         if (tag.getCreatedBy().equals(currentUser.getId()) || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))){
             tag.setName(newTag.getName());
             Tag updatedTag = tagRepository.save(tag);
-            return new ResponseEntity<>(updatedTag, HttpStatus.OK);
+            return updatedTag;
         }
-        return new ResponseEntity<>(new ApiResponse(Boolean.FALSE, "You don't have permission to edit this tag"), HttpStatus.UNAUTHORIZED);
+        ApiResponse apiResponse =new ApiResponse(Boolean.FALSE, "You don't have permission to edit this tag");
+        
+        throw new UnauthorizedException(apiResponse);
     }
 	
 	@Override
-	public ResponseEntity<?> deleteTag(Long id, UserPrincipal currentUser){
+	public ApiResponse deleteTag(Long id, UserPrincipal currentUser){
         Tag tag = tagRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Tag", "id", id));
         if (tag.getCreatedBy().equals(currentUser.getId()) || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))){
             tagRepository.deleteById(id);
-            return new ResponseEntity<>(new ApiResponse(Boolean.TRUE, "You successfully deleted tag"), HttpStatus.OK);
+            return new ApiResponse(Boolean.TRUE, "You successfully deleted tag");
         }
-        return new ResponseEntity<>(new ApiResponse(Boolean.FALSE, "You don't have permission to delete this tag"), HttpStatus.UNAUTHORIZED);
+        
+        ApiResponse apiResponse =new ApiResponse(Boolean.FALSE, "You don't have permission to delete this tag");
+        
+        throw new UnauthorizedException(apiResponse);
     }
 }
 

@@ -1,5 +1,7 @@
 package com.sopromadze.blogapi.service.impl;
 
+import static com.sopromadze.blogapi.utils.AppConstants.ID;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -32,6 +34,16 @@ import com.sopromadze.blogapi.utils.AppUtils;
 
 @Service
 public class AlbumServiceImpl implements AlbumService {
+	private static final String CREATED_AT = "createdAt";
+
+	
+
+	private static final String ALBUM_STR = "Album";
+
+	private static final String USER_STR = "User";
+
+	private static final String USERNAME_STR = "username";
+
 	private static final String YOU_DON_T_HAVE_PERMISSION_TO_MAKE_THIS_OPERATION = "You don't have permission to make this operation";
 
 	@Autowired
@@ -48,7 +60,7 @@ public class AlbumServiceImpl implements AlbumService {
 	public PagedResponse<AlbumResponse> getAllAlbums(int page, int size){
         AppUtils.validatePageNumberAndSize(page, size);
 
-        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
 
         Page<Album> albums = albumRepository.findAll(pageable);
 
@@ -63,7 +75,7 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Override
 	public ResponseEntity<Album> addAlbum(AlbumRequest albumRequest, UserPrincipal currentUser){
-        User user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow(() -> new ResourceNotFoundException("User", "username", currentUser.getUsername()));
+        User user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow(() -> new ResourceNotFoundException(USER_STR, USERNAME_STR, currentUser.getUsername()));
         
         Album album = new Album();
         
@@ -76,14 +88,14 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Override
 	public ResponseEntity<Album> getAlbum(Long id){
-        Album album = albumRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Album", "id", id));
+        Album album = albumRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ALBUM_STR, ID, id));
         return new ResponseEntity<>(album, HttpStatus.OK);
     }
 
     @Override
 	public ResponseEntity<AlbumResponse> updateAlbum(Long id, AlbumRequest newAlbum, UserPrincipal currentUser){
-        Album album = albumRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Album", "id", id));
-        User user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow(() -> new ResourceNotFoundException("User", "username", currentUser.getUsername()));
+        Album album = albumRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ALBUM_STR, ID, id));
+        User user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow(() -> new ResourceNotFoundException(USER_STR, USERNAME_STR, currentUser.getUsername()));
         if (album.getUser().getId().equals(user.getId()) || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))){
             album.setTitle(newAlbum.getTitle());
             Album updatedAlbum = albumRepository.save(album);
@@ -100,8 +112,8 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Override
 	public ResponseEntity<ApiResponse> deleteAlbum(Long id, UserPrincipal currentUser){
-        Album album = albumRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Album", "id", id));
-        User user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow(() -> new ResourceNotFoundException("User", "username", currentUser.getUsername()));
+        Album album = albumRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ALBUM_STR, ID, id));
+        User user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow(() -> new ResourceNotFoundException(USER_STR, USERNAME_STR, currentUser.getUsername()));
         if (album.getUser().getId().equals(user.getId()) || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))){
             albumRepository.deleteById(id);
             return new ResponseEntity<>(new ApiResponse(Boolean.TRUE, "You successfully deleted album"), HttpStatus.OK);
@@ -112,14 +124,13 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Override
 	public PagedResponse<Album> getUserAlbums(String username, int page, int size){
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
-        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException(USER_STR, USERNAME_STR, username));
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
 
         Page<Album> albums = albumRepository.findByCreatedBy(user.getId(), pageable);
-
-        if (albums.getNumberOfElements() == 0){
-            return new PagedResponse<>(Collections.emptyList(), albums.getNumber(), albums.getSize(), albums.getTotalElements(), albums.getTotalPages(), albums.isLast());
-        }
-        return new PagedResponse<>(albums.getContent(), albums.getNumber(), albums.getSize(), albums.getTotalElements(), albums.getTotalPages(), albums.isLast());
+        
+        List<Album> content = albums.getNumberOfElements() > 0 ? albums.getContent() : Collections.emptyList();
+        
+        return new PagedResponse<>(content, albums.getNumber(), albums.getSize(), albums.getTotalElements(), albums.getTotalPages(), albums.isLast());
     }
 }

@@ -49,7 +49,7 @@ public class PostRequest {
 
 	public List<String> getTags() {
 		
-		return tags == null ? null : new ArrayList<>(tags);
+		return tags == null ? Collections.emptyList() : new ArrayList<>(tags);
 	}
 
 	public void setTags(List<String> tags) {

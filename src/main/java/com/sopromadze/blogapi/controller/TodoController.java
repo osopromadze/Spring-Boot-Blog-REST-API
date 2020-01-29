@@ -3,6 +3,7 @@ package com.sopromadze.blogapi.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sopromadze.blogapi.model.todo.Todo;
+import com.sopromadze.blogapi.payload.ApiResponse;
 import com.sopromadze.blogapi.payload.PagedResponse;
 import com.sopromadze.blogapi.security.CurrentUser;
 import com.sopromadze.blogapi.security.UserPrincipal;
@@ -31,46 +33,63 @@ public class TodoController {
 
     @GetMapping
     @PreAuthorize("hasRole('USER')")
-    public PagedResponse<Todo> getAllTodos(
+    public ResponseEntity<PagedResponse<Todo>> getAllTodos(
             @CurrentUser UserPrincipal currentUser,
             @RequestParam(value = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
             @RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size){
-        return todoService.getAllTodos(currentUser, page, size);
+    	
+    	PagedResponse<Todo> response = todoService.getAllTodos(currentUser, page, size);
+    	
+    	return new ResponseEntity<PagedResponse<Todo>>(response, HttpStatus.OK);
     }
 
     @PostMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> addTodo(@Valid @RequestBody Todo todo, @CurrentUser UserPrincipal currentUser){
-        return todoService.addTodo(todo, currentUser);
+    public ResponseEntity<Todo> addTodo(@Valid @RequestBody Todo todo, @CurrentUser UserPrincipal currentUser){
+        Todo newTodo = todoService.addTodo(todo, currentUser);
+        
+        return new ResponseEntity<Todo>(newTodo, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> getTodo(@PathVariable(value = "id") Long id, @CurrentUser UserPrincipal currentUser){
-        return todoService.getTodo(id, currentUser);
+    public ResponseEntity<Todo> getTodo(@PathVariable(value = "id") Long id, @CurrentUser UserPrincipal currentUser){
+        Todo todo = todoService.getTodo(id, currentUser);
+        
+        return new ResponseEntity<Todo>(todo, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> updateTodo(@PathVariable(value = "id") Long id, @Valid @RequestBody Todo newTodo, @CurrentUser UserPrincipal currentUser){
-        return todoService.updateTodo(id, newTodo, currentUser);
+    public ResponseEntity<Todo> updateTodo(@PathVariable(value = "id") Long id, @Valid @RequestBody Todo newTodo, @CurrentUser UserPrincipal currentUser){
+        Todo updatedTodo = todoService.updateTodo(id, newTodo, currentUser);
+        
+        return new ResponseEntity<Todo>(updatedTodo, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> deleteTodo(@PathVariable(value = "id") Long id, @CurrentUser UserPrincipal currentUser){
-        return todoService.deleteTodo(id, currentUser);
+    public ResponseEntity<ApiResponse> deleteTodo(@PathVariable(value = "id") Long id, @CurrentUser UserPrincipal currentUser){
+        ApiResponse apiResponse = todoService.deleteTodo(id, currentUser);
+        
+        return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.OK);
     }
 
     @PutMapping("/{id}/complete")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> completeTodo(@PathVariable(value = "id") Long id, @CurrentUser UserPrincipal currentUser){
-        return todoService.completeTodo(id, currentUser);
+    public ResponseEntity<Todo> completeTodo(@PathVariable(value = "id") Long id, @CurrentUser UserPrincipal currentUser){
+    	
+        Todo todo = todoService.completeTodo(id, currentUser);
+        
+        return new ResponseEntity<Todo>(todo, HttpStatus.OK);
     }
 
     @PutMapping("/{id}/unComplete")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> unCompleteTodo(@PathVariable(value = "id") Long id, @CurrentUser UserPrincipal currentUser){
-        return todoService.unCompleteTodo(id, currentUser);
+    public ResponseEntity<Todo> unCompleteTodo(@PathVariable(value = "id") Long id, @CurrentUser UserPrincipal currentUser){
+        
+    	Todo todo = todoService.unCompleteTodo(id, currentUser);
+        
+        return new ResponseEntity<Todo>(todo, HttpStatus.OK);
     }
 }

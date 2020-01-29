@@ -14,7 +14,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import com.sopromadze.blogapi.exception.ResourceNotFoundException;
-import com.sopromadze.blogapi.exception.UnathorizedException;
+import com.sopromadze.blogapi.exception.UnauthorizedException;
 import com.sopromadze.blogapi.model.category.Category;
 import com.sopromadze.blogapi.model.role.RoleName;
 import com.sopromadze.blogapi.payload.ApiResponse;
@@ -56,7 +56,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 	
 	@Override
-	public ResponseEntity<Category> updateCategory(Long id, Category newCategory, UserPrincipal currentUser) throws UnathorizedException {
+	public ResponseEntity<Category> updateCategory(Long id, Category newCategory, UserPrincipal currentUser) throws UnauthorizedException {
         Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
         if (category.getCreatedBy().equals(currentUser.getId()) || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))){
             category.setName(newCategory.getName());
@@ -64,17 +64,17 @@ public class CategoryServiceImpl implements CategoryService {
             return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
         }
         
-        throw new UnathorizedException("You don't have permission to edit this category");
+        throw new UnauthorizedException("You don't have permission to edit this category");
     }
 	
 	@Override
-	public ResponseEntity<ApiResponse> deleteCategory(Long id, UserPrincipal currentUser) throws UnathorizedException{
+	public ResponseEntity<ApiResponse> deleteCategory(Long id, UserPrincipal currentUser) throws UnauthorizedException{
         Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("category", "id", id));
         if (category.getCreatedBy().equals(currentUser.getId()) || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))){
             categoryRepository.deleteById(id);
             return new ResponseEntity<>(new ApiResponse(Boolean.TRUE, "You successfully deleted category"), HttpStatus.OK);
         }
-        throw new UnathorizedException("You don't have permission to delete this category");
+        throw new UnauthorizedException("You don't have permission to delete this category");
     }
 }
 

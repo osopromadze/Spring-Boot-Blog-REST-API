@@ -1,29 +1,35 @@
 package com.sopromadze.blogapi.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.sopromadze.blogapi.exception.AccessDeniedException;
 import com.sopromadze.blogapi.exception.AppException;
+import com.sopromadze.blogapi.exception.BadRequestException;
 import com.sopromadze.blogapi.exception.ResourceNotFoundException;
+import com.sopromadze.blogapi.exception.UnauthorizedException;
 import com.sopromadze.blogapi.model.role.Role;
 import com.sopromadze.blogapi.model.role.RoleName;
 import com.sopromadze.blogapi.model.user.Address;
 import com.sopromadze.blogapi.model.user.Company;
 import com.sopromadze.blogapi.model.user.Geo;
 import com.sopromadze.blogapi.model.user.User;
-import com.sopromadze.blogapi.payload.*;
+import com.sopromadze.blogapi.payload.ApiResponse;
+import com.sopromadze.blogapi.payload.InfoRequest;
+import com.sopromadze.blogapi.payload.UserIdentityAvailability;
+import com.sopromadze.blogapi.payload.UserProfile;
+import com.sopromadze.blogapi.payload.UserSummary;
 import com.sopromadze.blogapi.repository.PostRepository;
 import com.sopromadze.blogapi.repository.RoleRepository;
 import com.sopromadze.blogapi.repository.UserRepository;
 import com.sopromadze.blogapi.security.UserPrincipal;
 import com.sopromadze.blogapi.service.UserService;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -70,13 +76,15 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public ResponseEntity<?> addUser(User user) {
+	public User addUser(User user) {
 		if (userRepository.existsByUsername(user.getUsername())) {
-			return new ResponseEntity<>(new ApiResponse(Boolean.FALSE, "Username is already taken"), HttpStatus.BAD_REQUEST);
+			ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "Username is already taken");
+			throw new BadRequestException(apiResponse);
 		}
 
 		if (userRepository.existsByEmail(user.getEmail())) {
-			return new ResponseEntity<>(new ApiResponse(Boolean.FALSE, "Email is already taken"), HttpStatus.BAD_REQUEST);
+			ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "Email is already taken");
+			throw new BadRequestException(apiResponse);
 		}
 
 		List<Role> roles = new ArrayList<>();
@@ -86,11 +94,11 @@ public class UserServiceImpl implements UserService {
 
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		User result = userRepository.save(user);
-		return new ResponseEntity<>(result, HttpStatus.CREATED);
+		return result;
 	}
 
 	@Override
-	public ResponseEntity<?> updateUser(User newUser, String username, UserPrincipal currentUser) {
+	public User updateUser(User newUser, String username, UserPrincipal currentUser) {
 		User user = userRepository.findByUsername(username)
 				.orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
 		if (user.getId().equals(currentUser.getId())
@@ -104,33 +112,31 @@ public class UserServiceImpl implements UserService {
 			user.setCompany(newUser.getCompany());
 
 			User updatedUser = userRepository.save(user);
-			return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+			return updatedUser;
 
 		}
 
-		return new ResponseEntity<>(
-				new ApiResponse(Boolean.FALSE, "You don't have permission to update profile of: " + username),
-				HttpStatus.UNAUTHORIZED);
+		ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to update profile of: " + username);
+		throw new UnauthorizedException(apiResponse);
 
 	}
 
 	@Override
-	public ResponseEntity<?> deleteUser(String username, UserPrincipal currentUser) {
+	public ApiResponse deleteUser(String username, UserPrincipal currentUser) {
 		User user = userRepository.findByUsername(username)
 				.orElseThrow(() -> new ResourceNotFoundException("User", "id", username));
-		if (!user.getId().equals(currentUser.getId())) {
-			return new ResponseEntity<>(
-					new ApiResponse(Boolean.FALSE, "You don't have permission to delete profile of: " + username),
-					HttpStatus.UNAUTHORIZED);
+		if (!user.getId().equals(currentUser.getId()) || !currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
+			ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to delete profile of: " + username);
+			throw new AccessDeniedException(apiResponse);
 		}
+		
 		userRepository.deleteById(user.getId());
 
-		return new ResponseEntity<>(new ApiResponse(Boolean.TRUE, "You successfully deleted profile of: " + username),
-				HttpStatus.OK);
+		return new ApiResponse(Boolean.TRUE, "You successfully deleted profile of: " + username);
 	}
 
 	@Override
-	public ResponseEntity<?> giveAdmin(String username) {
+	public ApiResponse giveAdmin(String username) {
 		User user = userRepository.findByUsername(username)
 				.orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
 		List<Role> roles = new ArrayList<>();
@@ -140,11 +146,11 @@ public class UserServiceImpl implements UserService {
 				roleRepository.findByName(RoleName.ROLE_USER).orElseThrow(() -> new AppException("User role not set")));
 		user.setRoles(roles);
 		userRepository.save(user);
-		return new ResponseEntity<>(new ApiResponse(Boolean.TRUE, "You gave ADMIN role to user: " + username), HttpStatus.OK);
+		return new ApiResponse(Boolean.TRUE, "You gave ADMIN role to user: " + username);
 	}
 
 	@Override
-	public ResponseEntity<?> takeAdmin(String username) {
+	public ApiResponse removeAdmin(String username) {
 		User user = userRepository.findByUsername(username)
 				.orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
 		List<Role> roles = new ArrayList<>();
@@ -152,11 +158,11 @@ public class UserServiceImpl implements UserService {
 				roleRepository.findByName(RoleName.ROLE_USER).orElseThrow(() -> new AppException("User role not set")));
 		user.setRoles(roles);
 		userRepository.save(user);
-		return new ResponseEntity<>(new ApiResponse(Boolean.TRUE, "You took ADMIN role from user: " + username), HttpStatus.OK);
+		return new ApiResponse(Boolean.TRUE, "You took ADMIN role from user: " + username);
 	}
 
 	@Override
-	public ResponseEntity<?> setOrUpdateInfo(UserPrincipal currentUser, InfoRequest infoRequest) {
+	public UserProfile setOrUpdateInfo(UserPrincipal currentUser, InfoRequest infoRequest) {
 		User user = userRepository.findByUsername(currentUser.getUsername())
 				.orElseThrow(() -> new ResourceNotFoundException("User", "username", currentUser.getUsername()));
 		Geo geo = new Geo(infoRequest.getLat(), infoRequest.getLng());
@@ -177,9 +183,10 @@ public class UserServiceImpl implements UserService {
 					updatedUser.getFirstName(), updatedUser.getLastName(), updatedUser.getCreatedAt(),
 					updatedUser.getEmail(), updatedUser.getAddress(), updatedUser.getPhone(), updatedUser.getWebsite(),
 					updatedUser.getCompany(), postCount);
-			return new ResponseEntity<>(userProfile, HttpStatus.OK);
+			return userProfile;
 		}
-		return new ResponseEntity<>(new ApiResponse(Boolean.FALSE, "You don't have permission to update users profile"),
-				HttpStatus.OK);
+		
+		ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to update users profile", HttpStatus.FORBIDDEN);
+		throw new AccessDeniedException(apiResponse);
 	}
 }

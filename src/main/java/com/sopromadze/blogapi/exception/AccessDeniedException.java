@@ -6,24 +6,24 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import com.sopromadze.blogapi.payload.ApiResponse;
 
 @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
-public class UnauthorizedException extends RuntimeException {
+public class AccessDeniedException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 	
 	private ApiResponse apiResponse;
 
 	private String message;
 	
-	public UnauthorizedException(ApiResponse apiResponse) {
+	public AccessDeniedException(ApiResponse apiResponse) {
 		super();
 		this.apiResponse = apiResponse;
 	}
 
-	public UnauthorizedException(String message){
+	public AccessDeniedException(String message){
 		super(message);
 		this.message = message;
 	}
 	
-	public UnauthorizedException(String message, Throwable cause){
+	public AccessDeniedException(String message, Throwable cause){
 		super(message, cause);
 	}
 

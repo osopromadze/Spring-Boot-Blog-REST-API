@@ -1,18 +1,25 @@
 package com.sopromadze.blogapi.service.impl;
 
+import static com.sopromadze.blogapi.utils.AppConstants.CREATED_AT;
+import static com.sopromadze.blogapi.utils.AppConstants.ID;
+import static com.sopromadze.blogapi.utils.AppConstants.TODO;
+import static com.sopromadze.blogapi.utils.AppConstants.USER;
+import static com.sopromadze.blogapi.utils.AppConstants.USERNAME;
+import static com.sopromadze.blogapi.utils.AppConstants.YOU_DON_T_HAVE_PERMISSION_TO_MAKE_THIS_OPERATION;
+
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.sopromadze.blogapi.exception.BadRequestException;
 import com.sopromadze.blogapi.exception.ResourceNotFoundException;
+import com.sopromadze.blogapi.exception.UnauthorizedException;
 import com.sopromadze.blogapi.model.todo.Todo;
 import com.sopromadze.blogapi.model.user.User;
 import com.sopromadze.blogapi.payload.ApiResponse;
@@ -25,6 +32,8 @@ import com.sopromadze.blogapi.utils.AppConstants;
 
 @Service
 public class TodoServiceImpl implements TodoService {
+	
+
 	@Autowired
 	private TodoRepository todoRepository;
 
@@ -32,98 +41,107 @@ public class TodoServiceImpl implements TodoService {
 	private UserRepository userRepository;
 
 	@Override
-	public ResponseEntity<?> completeTodo(Long id, UserPrincipal currentUser) {
-		Todo todo = todoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Todo", "id", id));
+	public Todo completeTodo(Long id, UserPrincipal currentUser) {
+		Todo todo = todoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(TODO, ID, id));
+		
 		User user = userRepository.findByUsername(currentUser.getUsername())
-				.orElseThrow(() -> new ResourceNotFoundException("User", "username", currentUser.getUsername()));
+				.orElseThrow(() -> new ResourceNotFoundException(USER, USERNAME, currentUser.getUsername()));
+		
 		if (todo.getUser().getId().equals(user.getId())) {
 			todo.setCompleted(Boolean.TRUE);
 			Todo result = todoRepository.save(todo);
-			return new ResponseEntity<>(result, HttpStatus.OK);
+			return result;
 		}
-		return todo.getUser().getId().equals(user.getId()) ? new ResponseEntity<>(todo, HttpStatus.OK)
-				: new ResponseEntity<>(new ApiResponse(Boolean.FALSE, "You don't have permission to make this operation"),
-						HttpStatus.UNAUTHORIZED);
+		
+		ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, YOU_DON_T_HAVE_PERMISSION_TO_MAKE_THIS_OPERATION);
+		
+		throw new UnauthorizedException(apiResponse);
 	}
 
 	@Override
-	public ResponseEntity<?> unCompleteTodo(Long id, UserPrincipal currentUser) {
-		Todo todo = todoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Todo", "id", id));
+	public Todo unCompleteTodo(Long id, UserPrincipal currentUser) {
+		Todo todo = todoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(TODO, ID, id));
 		User user = userRepository.findByUsername(currentUser.getUsername())
-				.orElseThrow(() -> new ResourceNotFoundException("User", "username", currentUser.getUsername()));
+				.orElseThrow(() -> new ResourceNotFoundException(USER, USERNAME, currentUser.getUsername()));
 		if (todo.getUser().getId().equals(user.getId())) {
 			todo.setCompleted(Boolean.FALSE);
 			Todo result = todoRepository.save(todo);
-			return new ResponseEntity<>(result, HttpStatus.OK);
+			return result;
 		}
-		return todo.getUser().getId().equals(user.getId()) ? new ResponseEntity<>(todo, HttpStatus.OK)
-				: new ResponseEntity<>(new ApiResponse(Boolean.FALSE, "You don't have permission to make this operation"),
-						HttpStatus.UNAUTHORIZED);
+		
+		ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, YOU_DON_T_HAVE_PERMISSION_TO_MAKE_THIS_OPERATION);
+		
+		throw new UnauthorizedException(apiResponse);
 	}
 
 	@Override
 	public PagedResponse<Todo> getAllTodos(UserPrincipal currentUser, int page, int size) {
 		validatePageNumberAndSize(page, size);
-		Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
+		Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
 
 		Page<Todo> todos = todoRepository.findByCreatedBy(currentUser.getId(), pageable);
+		
+		List<Todo> content = todos.getNumberOfElements() == 0 ? Collections.emptyList() : todos.getContent();
 
-		if (todos.getNumberOfElements() == 0) {
-			return new PagedResponse<>(Collections.emptyList(), todos.getNumber(), todos.getSize(),
-					todos.getTotalElements(), todos.getTotalPages(), todos.isLast());
-		}
-
-		return new PagedResponse<>(todos.getContent(), todos.getNumber(), todos.getSize(), todos.getTotalElements(),
+		return new PagedResponse<>(content, todos.getNumber(), todos.getSize(), todos.getTotalElements(),
 				todos.getTotalPages(), todos.isLast());
 	}
 
 	@Override
-	public ResponseEntity<?> addTodo(Todo todo, UserPrincipal currentUser) {
+	public Todo addTodo(Todo todo, UserPrincipal currentUser) {
 		User user = userRepository.findByUsername(currentUser.getUsername())
-				.orElseThrow(() -> new ResourceNotFoundException("User", "username", currentUser.getUsername()));
+				.orElseThrow(() -> new ResourceNotFoundException(USER, USERNAME, currentUser.getUsername()));
 		todo.setUser(user);
 		Todo result = todoRepository.save(todo);
-		return new ResponseEntity<>(result, HttpStatus.CREATED);
+		return result;
 	}
 
 	@Override
-	public ResponseEntity<?> getTodo(Long id, UserPrincipal currentUser) {
+	public Todo getTodo(Long id, UserPrincipal currentUser) {
 		User user = userRepository.findByUsername(currentUser.getUsername())
-				.orElseThrow(() -> new ResourceNotFoundException("User", "username", currentUser.getUsername()));
-		Todo todo = todoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Todo", "id", id));
-
-		return todo.getUser().getId().equals(user.getId()) ? new ResponseEntity<>(todo, HttpStatus.OK)
-				: new ResponseEntity<>(new ApiResponse(Boolean.FALSE, "You don't have permission to make this operation"),
-						HttpStatus.UNAUTHORIZED);
+				.orElseThrow(() -> new ResourceNotFoundException(USER, USERNAME, currentUser.getUsername()));
+		Todo todo = todoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(TODO, ID, id));
+		
+		if(todo.getUser().getId().equals(user.getId())) {
+			return todo;
+		}
+		
+		ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, YOU_DON_T_HAVE_PERMISSION_TO_MAKE_THIS_OPERATION);
+		
+		throw new UnauthorizedException(apiResponse);
 	}
 
 	@Override
-	public ResponseEntity<?> updateTodo(Long id, Todo newTodo, UserPrincipal currentUser) {
+	public Todo updateTodo(Long id, Todo newTodo, UserPrincipal currentUser) {
 		User user = userRepository.findByUsername(currentUser.getUsername())
-				.orElseThrow(() -> new ResourceNotFoundException("User", "username", currentUser.getUsername()));
-		Todo todo = todoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Todo", "id", id));
+				.orElseThrow(() -> new ResourceNotFoundException(USER, USERNAME, currentUser.getUsername()));
+		Todo todo = todoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(TODO, ID, id));
 		if (todo.getUser().getId().equals(user.getId())) {
 			todo.setTitle(newTodo.getTitle());
 			todo.setCompleted(newTodo.getCompleted());
 			Todo result = todoRepository.save(todo);
-			return new ResponseEntity<>(result, HttpStatus.OK);
+			return result;
 		}
-		return new ResponseEntity<>(new ApiResponse(Boolean.FALSE, "You don't have permission to make this operation"),
-				HttpStatus.UNAUTHORIZED);
+		
+		ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, YOU_DON_T_HAVE_PERMISSION_TO_MAKE_THIS_OPERATION);
+		
+		throw new UnauthorizedException(apiResponse);
 	}
 
 	@Override
-	public ResponseEntity<?> deleteTodo(Long id, UserPrincipal currentUser) {
+	public ApiResponse deleteTodo(Long id, UserPrincipal currentUser) {
 		User user = userRepository.findByUsername(currentUser.getUsername())
-				.orElseThrow(() -> new ResourceNotFoundException("User", "username", currentUser.getUsername()));
-		Todo todo = todoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Todo", "id", id));
+				.orElseThrow(() -> new ResourceNotFoundException(USER, USERNAME, currentUser.getUsername()));
+		Todo todo = todoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(TODO, ID, id));
 
 		if (todo.getUser().getId().equals(user.getId())) {
 			todoRepository.deleteById(id);
-			return new ResponseEntity<>(new ApiResponse(Boolean.TRUE, "You successfully deleted todo"), HttpStatus.OK);
+			return new ApiResponse(Boolean.TRUE, "You successfully deleted todo");
 		}
-		return new ResponseEntity<>(new ApiResponse(Boolean.FALSE, "You don't have permission to make this operation"),
-				HttpStatus.UNAUTHORIZED);
+		
+		ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, YOU_DON_T_HAVE_PERMISSION_TO_MAKE_THIS_OPERATION);
+		
+		throw new UnauthorizedException(apiResponse);
 	}
 
 	private void validatePageNumberAndSize(int page, int size) {

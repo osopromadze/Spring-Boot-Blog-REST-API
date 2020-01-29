@@ -3,6 +3,7 @@ package com.sopromadze.blogapi.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -78,10 +79,13 @@ public class AlbumController {
 	}
 
 	@GetMapping("/{id}/photos")
-	public PagedResponse<PhotoResponse> getAllPhotosByAlbum(@PathVariable(name = "id") Long id,
+	public ResponseEntity<PagedResponse<PhotoResponse>> getAllPhotosByAlbum(@PathVariable(name = "id") Long id,
 			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
-		return photoService.getAllPhotosByAlbum(id, page, size);
+		
+		PagedResponse<PhotoResponse> response = photoService.getAllPhotosByAlbum(id, page, size);
+		
+		return new ResponseEntity<PagedResponse<PhotoResponse>>(response, HttpStatus.OK);
 	}
 
 }

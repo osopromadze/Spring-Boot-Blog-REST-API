@@ -1,8 +1,7 @@
 package com.sopromadze.blogapi.service;
 
-import org.springframework.http.ResponseEntity;
-
 import com.sopromadze.blogapi.model.user.User;
+import com.sopromadze.blogapi.payload.ApiResponse;
 import com.sopromadze.blogapi.payload.InfoRequest;
 import com.sopromadze.blogapi.payload.UserIdentityAvailability;
 import com.sopromadze.blogapi.payload.UserProfile;
@@ -19,16 +18,16 @@ public interface UserService {
 
 	UserProfile getUserProfile(String username);
 
-	ResponseEntity<?> addUser(User user);
+	User addUser(User user);
 
-	ResponseEntity<?> updateUser(User newUser, String username, UserPrincipal currentUser);
+	User updateUser(User newUser, String username, UserPrincipal currentUser);
 
-	ResponseEntity<?> deleteUser(String username, UserPrincipal currentUser);
+	ApiResponse deleteUser(String username, UserPrincipal currentUser);
 
-	ResponseEntity<?> giveAdmin(String username);
+	ApiResponse giveAdmin(String username);
 
-	ResponseEntity<?> takeAdmin(String username);
+	ApiResponse removeAdmin(String username);
 
-	ResponseEntity<?> setOrUpdateInfo(UserPrincipal currentUser, InfoRequest infoRequest);
+	UserProfile setOrUpdateInfo(UserPrincipal currentUser, InfoRequest infoRequest);
 
 }
