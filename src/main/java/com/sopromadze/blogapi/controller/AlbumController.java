@@ -21,12 +21,14 @@ import com.sopromadze.blogapi.model.album.Album;
 import com.sopromadze.blogapi.payload.AlbumResponse;
 import com.sopromadze.blogapi.payload.ApiResponse;
 import com.sopromadze.blogapi.payload.PagedResponse;
+import com.sopromadze.blogapi.payload.PhotoResponse;
 import com.sopromadze.blogapi.payload.request.AlbumRequest;
 import com.sopromadze.blogapi.security.CurrentUser;
 import com.sopromadze.blogapi.security.UserPrincipal;
 import com.sopromadze.blogapi.service.AlbumService;
 import com.sopromadze.blogapi.service.PhotoService;
 import com.sopromadze.blogapi.utils.AppConstants;
+import com.sopromadze.blogapi.utils.AppUtils;
 
 @RestController
 @RequestMapping("/api/albums")
@@ -46,6 +48,7 @@ public class AlbumController {
 	public PagedResponse<AlbumResponse> getAllAlbums(
 			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
+		AppUtils.validatePageNumberAndSize(page, size);
 		
 		return albumService.getAllAlbums(page, size);
 	}
@@ -57,7 +60,7 @@ public class AlbumController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getAlbum(@PathVariable(name = "id") Long id) {
+	public ResponseEntity<Album> getAlbum(@PathVariable(name = "id") Long id) {
 		return albumService.getAlbum(id);
 	}
 
@@ -70,12 +73,12 @@ public class AlbumController {
 
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	public ResponseEntity<?> deleteAlbum(@PathVariable(name = "id") Long id, @CurrentUser UserPrincipal currentUser) {
+	public ResponseEntity<ApiResponse> deleteAlbum(@PathVariable(name = "id") Long id, @CurrentUser UserPrincipal currentUser) {
 		return albumService.deleteAlbum(id, currentUser);
 	}
 
 	@GetMapping("/{id}/photos")
-	public PagedResponse<?> getAllPhotosByAlbum(@PathVariable(name = "id") Long id,
+	public PagedResponse<PhotoResponse> getAllPhotosByAlbum(@PathVariable(name = "id") Long id,
 			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
 		return photoService.getAllPhotosByAlbum(id, page, size);

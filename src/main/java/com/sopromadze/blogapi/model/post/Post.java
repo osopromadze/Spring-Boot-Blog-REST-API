@@ -1,5 +1,7 @@
 package com.sopromadze.blogapi.model.post;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -92,11 +94,15 @@ public class Post extends UserDateAudit {
 	}
 
 	public List<Comment> getComments() {
-		return comments;
+		return comments == null ? null : new ArrayList<>(comments);
 	}
 
 	public void setComments(List<Comment> comments) {
-		this.comments = comments;
+		if (comments == null) {
+			this.comments = null;
+		} else {
+			this.comments = Collections.unmodifiableList(comments);
+		}
 	}
 
 	public Category getCategory() {
@@ -108,10 +114,14 @@ public class Post extends UserDateAudit {
 	}
 
 	public List<Tag> getTags() {
-		return tags;
+		return tags == null ? null : new ArrayList<>(tags);
 	}
 
 	public void setTags(List<Tag> tags) {
-		this.tags = tags;
+		if (tags == null) {
+			this.tags = null;
+		} else {
+			this.tags = Collections.unmodifiableList(tags);
+		}
 	}
 }

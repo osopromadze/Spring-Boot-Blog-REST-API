@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sopromadze.blogapi.exception.UnathorizedException;
 import com.sopromadze.blogapi.model.category.Category;
+import com.sopromadze.blogapi.payload.ApiResponse;
 import com.sopromadze.blogapi.payload.PagedResponse;
 import com.sopromadze.blogapi.security.CurrentUser;
 import com.sopromadze.blogapi.security.UserPrincipal;
@@ -29,7 +31,7 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping
-    public PagedResponse<?> getAllCategories(
+    public PagedResponse<Category> getAllCategories(
             @RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
             @RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size){
         return categoryService.getAllCategories(page, size);
@@ -37,24 +39,24 @@ public class CategoryController {
 
     @PostMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> addCategory(@Valid @RequestBody Category category, @CurrentUser UserPrincipal currentUser){
+    public ResponseEntity<Category> addCategory(@Valid @RequestBody Category category, @CurrentUser UserPrincipal currentUser){
         return categoryService.addCategory(category, currentUser);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getCategory(@PathVariable(name = "id") Long id){
+    public ResponseEntity<Category> getCategory(@PathVariable(name = "id") Long id){
         return categoryService.getCategory(id);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> updateCategory(@PathVariable(name = "id") Long id, @Valid @RequestBody Category category, @CurrentUser UserPrincipal currentUser){
+    public ResponseEntity<Category> updateCategory(@PathVariable(name = "id") Long id, @Valid @RequestBody Category category, @CurrentUser UserPrincipal currentUser) throws UnathorizedException{
         return categoryService.updateCategory(id, category, currentUser);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> deleteCategory(@PathVariable(name = "id") Long id, @CurrentUser UserPrincipal currentUser){
+    public ResponseEntity<ApiResponse> deleteCategory(@PathVariable(name = "id") Long id, @CurrentUser UserPrincipal currentUser) throws UnathorizedException{
         return categoryService.deleteCategory(id, currentUser);
     }
 

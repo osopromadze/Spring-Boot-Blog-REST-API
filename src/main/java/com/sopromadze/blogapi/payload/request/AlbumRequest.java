@@ -1,6 +1,7 @@
 package com.sopromadze.blogapi.payload.request;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.sopromadze.blogapi.model.photo.Photo;
@@ -42,14 +43,16 @@ public class AlbumRequest extends UserDateAuditPayload {
 	}
 
 	public List<Photo> getPhoto() {
-		return photo;
+		
+		return photo == null ? null : new ArrayList<>(photo);
 	}
 
 	public void setPhoto(List<Photo> photo) {
-		if (photo != null) {
-			this.photo = new ArrayList<>(photo);
-		} else {
+		
+		if (photo == null) {
 			this.photo = null;
+		} else {
+			this.photo = Collections.unmodifiableList(photo);
 		}
 	}
 }

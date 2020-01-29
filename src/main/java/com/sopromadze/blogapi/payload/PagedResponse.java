@@ -1,5 +1,7 @@
 package com.sopromadze.blogapi.payload;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PagedResponse<T> {
@@ -15,7 +17,7 @@ public class PagedResponse<T> {
     }
 
     public PagedResponse(List<T> content, int page, int size, long totalElements, int totalPages, boolean last) {
-        this.content = content;
+        setContent(content);
         this.page = page;
         this.size = size;
         this.totalElements = totalElements;
@@ -24,11 +26,15 @@ public class PagedResponse<T> {
     }
 
     public List<T> getContent() {
-        return content;
+		return content == null ? null : new ArrayList<>(content);
     }
 
-    public void setContent(List<T> posts) {
-        this.content = posts;
+    public final void setContent(List<T> content) {
+		if (content == null) {
+			this.content = null;
+		} else {
+			this.content = Collections.unmodifiableList(content);
+		}
     }
 
     public int getPage() {

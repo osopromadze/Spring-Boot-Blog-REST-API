@@ -1,5 +1,7 @@
 package com.sopromadze.blogapi.payload;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -39,5 +41,19 @@ public class AlbumResponse extends UserDateAuditPayload {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public List<Photo> getPhoto() {
+		
+		return photo == null ? null : new ArrayList<>(photo);
+	}
+
+	public void setPhoto(List<Photo> photo) {
+		
+		if (photo == null) {
+			this.photo = null;
+		} else {
+			this.photo = Collections.unmodifiableList(photo);
+		}
 	}
 }

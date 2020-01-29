@@ -1,6 +1,8 @@
 package com.sopromadze.blogapi.payload;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ExceptionResponse {
@@ -10,18 +12,24 @@ public class ExceptionResponse {
     private Instant timestamp;
 
     public ExceptionResponse(List<String> messages, String error, Integer status) {
-        this.messages = messages;
+		setMessages(messages);
         this.error = error;
         this.status = status;
         this.timestamp = Instant.now();
     }
 
     public List<String> getMessages() {
-        return messages;
+        
+		return messages == null ? null : new ArrayList<>(messages);
     }
 
-    public void setMessages(List<String> messages) {
-        this.messages = messages;
+    public final void setMessages(List<String> messages) {
+        
+		if (messages == null) {
+			this.messages = null;
+		} else {
+			this.messages = Collections.unmodifiableList(messages);
+		}
     }
 
     public String getError() {

@@ -1,5 +1,7 @@
 package com.sopromadze.blogapi.model.user;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -173,19 +175,31 @@ public class User extends DateAudit {
 	}
 
 	public List<Todo> getTodos() {
-		return todos;
+		
+		return todos == null ? null : new ArrayList<>(todos);
 	}
 
 	public void setTodos(List<Todo> todos) {
-		this.todos = todos;
+		
+		if (todos == null) {
+			this.todos = null;
+		} else {
+			this.todos = Collections.unmodifiableList(todos);
+		}
 	}
 
 	public List<Album> getAlbums() {
-		return albums;
+		
+		return albums == null ? null : new ArrayList<>(albums);
 	}
 
 	public void setAlbums(List<Album> albums) {
-		this.albums = albums;
+		
+		if (albums == null) {
+			this.albums = null;
+		} else {
+			this.albums = Collections.unmodifiableList(albums);
+		}
 	}
 
 	public String getFirstName() {
@@ -213,26 +227,43 @@ public class User extends DateAudit {
 	}
 
 	public List<Post> getPosts() {
-		return posts;
+		
+		return posts == null ? null : new ArrayList<>(posts);
 	}
 
 	public void setPosts(List<Post> posts) {
-		this.posts = posts;
+		
+		if (posts == null) {
+			this.posts = null;
+		} else {
+			this.posts = Collections.unmodifiableList(posts);
+		}
 	}
 
 	public List<Role> getRoles() {
-		return roles;
+
+		return roles == null ? null : new ArrayList<>(roles);
 	}
 
 	public void setRoles(List<Role> roles) {
-		this.roles = roles;
+
+		if (roles == null) {
+			this.roles = null;
+		} else {
+			this.roles = Collections.unmodifiableList(roles);
+		}
 	}
 
 	public List<Comment> getComments() {
-		return comments;
+		return comments == null ? null : new ArrayList<>(comments);
 	}
 
 	public void setComments(List<Comment> comments) {
-		this.comments = comments;
+
+		if (comments == null) {
+			this.comments = null;
+		} else {
+			this.comments = Collections.unmodifiableList(comments);
+		}
 	}
 }

@@ -1,5 +1,7 @@
 package com.sopromadze.blogapi.payload;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PostResponse {
@@ -27,9 +29,15 @@ public class PostResponse {
 		this.category = category;
 	}
 	public List<String> getTags() {
-		return tags;
+		
+		return tags == null ? null : new ArrayList<>(tags);
 	}
 	public void setTags(List<String> tags) {
-		this.tags = tags;
+		
+		if (tags == null) {
+			this.tags = null;
+		} else {
+			this.tags = Collections.unmodifiableList(tags);
+		}
 	}
 }
