@@ -3,6 +3,7 @@ package com.sopromadze.blogapi.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,11 +17,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sopromadze.blogapi.model.tag.Tag;
+import com.sopromadze.blogapi.payload.ApiResponse;
 import com.sopromadze.blogapi.payload.PagedResponse;
 import com.sopromadze.blogapi.security.CurrentUser;
 import com.sopromadze.blogapi.security.UserPrincipal;
 import com.sopromadze.blogapi.service.TagService;
-import com.sopromadze.blogapi.util.AppConstants;
+import com.sopromadze.blogapi.utils.AppConstants;
 
 @RestController
 @RequestMapping("/api/tags")
@@ -29,33 +31,45 @@ public class TagController {
     private TagService tagService;
 
     @GetMapping
-    public PagedResponse<?> getAllTags(
+    public ResponseEntity<PagedResponse<Tag>> getAllTags(
             @RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
-            @RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size){
-        return tagService.getAllTags(page, size);
+            @RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
+    	
+    	PagedResponse<Tag> response = tagService.getAllTags(page, size);
+    	
+    	return new ResponseEntity<PagedResponse<Tag>>(response, HttpStatus.OK);
     }
 
     @PostMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> addTag(@Valid @RequestBody Tag tag, @CurrentUser UserPrincipal currentUser){
-        return tagService.addTag(tag, currentUser);
+    public ResponseEntity<Tag> addTag(@Valid @RequestBody Tag tag, @CurrentUser UserPrincipal currentUser){
+        Tag newTag = tagService.addTag(tag, currentUser);
+        
+        return new ResponseEntity<Tag>(newTag, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getTag(@PathVariable(name = "id") Long id){
-        return tagService.getTag(id);
+    public ResponseEntity<Tag> getTag(@PathVariable(name = "id") Long id){
+        Tag tag = tagService.getTag(id);
+        
+        return new ResponseEntity<Tag>(tag, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> updateTag(@PathVariable(name = "id") Long id, @Valid @RequestBody Tag tag, @CurrentUser UserPrincipal currentUser){
-        return tagService.updateTag(id, tag, currentUser);
+    public ResponseEntity<Tag> updateTag(@PathVariable(name = "id") Long id, @Valid @RequestBody Tag tag, @CurrentUser UserPrincipal currentUser){
+    	
+        Tag updatedTag = tagService.updateTag(id, tag, currentUser);
+        
+        return new ResponseEntity<Tag>(updatedTag, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> deleteTag(@PathVariable(name = "id") Long id, @CurrentUser UserPrincipal currentUser){
-        return tagService.deleteTag(id, currentUser);
+    public ResponseEntity<ApiResponse> deleteTag(@PathVariable(name = "id") Long id, @CurrentUser UserPrincipal currentUser){
+        ApiResponse apiResponse = tagService.deleteTag(id, currentUser);
+        
+        return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.OK);
     }
 
 }

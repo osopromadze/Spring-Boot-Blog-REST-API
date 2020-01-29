@@ -1,5 +1,7 @@
 package com.sopromadze.blogapi.model.tag;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -34,7 +36,7 @@ public class Tag extends UserDateAudit {
 	@JsonIgnore
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "post_tag", joinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"))
-	List<Post> posts;
+	private List<Post> posts;
 
 	public Tag() {
 
@@ -62,11 +64,15 @@ public class Tag extends UserDateAudit {
 	}
 
 	public List<Post> getPosts() {
-		return posts;
+		return posts == null ? null : new ArrayList<>(posts);
 	}
 
 	public void setPosts(List<Post> posts) {
-		this.posts = posts;
+		if (posts == null) {
+			this.posts = null;
+		} else {
+			this.posts = Collections.unmodifiableList(posts);
+		}
 	}
 
 }

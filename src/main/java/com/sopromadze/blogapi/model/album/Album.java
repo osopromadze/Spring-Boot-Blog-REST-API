@@ -1,5 +1,7 @@
 package com.sopromadze.blogapi.model.album;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -64,5 +66,17 @@ public class Album extends UserDateAudit {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public List<Photo> getPhoto() {
+		return this.photo == null ? null : new ArrayList<>(this.photo);
+	}
+
+	public void setPhoto(List<Photo> photo) {
+		if (photo == null) {
+			this.photo = null;
+		} else {
+			this.photo = Collections.unmodifiableList(photo);
+		}
 	}
 }

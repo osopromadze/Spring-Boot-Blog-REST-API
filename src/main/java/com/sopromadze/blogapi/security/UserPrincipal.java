@@ -1,5 +1,6 @@
 package com.sopromadze.blogapi.security;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -39,7 +40,12 @@ public class UserPrincipal implements UserDetails {
 		this.username = username;
 		this.email = email;
 		this.password = password;
-		this.authorities = authorities;
+		
+		if (authorities == null) {
+			this.authorities = null;
+		} else {
+			this.authorities = new ArrayList<>(authorities);
+		}
 	}
 
 	public static UserPrincipal create(User user) {
@@ -60,7 +66,7 @@ public class UserPrincipal implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return authorities;
+		return authorities == null ? null : new ArrayList<>(authorities);
 	}
 
 	@Override

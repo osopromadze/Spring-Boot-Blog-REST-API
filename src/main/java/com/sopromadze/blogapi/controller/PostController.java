@@ -3,6 +3,7 @@ package com.sopromadze.blogapi.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,12 +17,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sopromadze.blogapi.model.post.Post;
+import com.sopromadze.blogapi.payload.ApiResponse;
 import com.sopromadze.blogapi.payload.PagedResponse;
 import com.sopromadze.blogapi.payload.PostRequest;
+import com.sopromadze.blogapi.payload.PostResponse;
 import com.sopromadze.blogapi.security.CurrentUser;
 import com.sopromadze.blogapi.security.UserPrincipal;
 import com.sopromadze.blogapi.service.PostService;
-import com.sopromadze.blogapi.util.AppConstants;
+import com.sopromadze.blogapi.utils.AppConstants;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -30,50 +33,64 @@ public class PostController {
 	private PostService postService;
 
 	@GetMapping
-	public PagedResponse<Post> getAllPosts(
+	public ResponseEntity<PagedResponse<Post>> getAllPosts(
 			@RequestParam(value = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 			@RequestParam(value = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
-		return postService.getAllPosts(page, size);
+		PagedResponse<Post> response = postService.getAllPosts(page, size);
+		
+		return new ResponseEntity<PagedResponse<Post>>(response, HttpStatus.OK);
 	}
 
 	@GetMapping("/category/{id}")
-	public PagedResponse<Post> getPostsByCategory(
+	public ResponseEntity<PagedResponse<Post>> getPostsByCategory(
 			@RequestParam(value = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 			@RequestParam(value = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size,
 			@PathVariable(name = "id") Long id) {
-		return postService.getPostsByCategory(id, page, size);
+		PagedResponse<Post> response = postService.getPostsByCategory(id, page, size);
+		
+		return new ResponseEntity<PagedResponse<Post>>(response, HttpStatus.OK);
 	}
 
 	@GetMapping("/tag/{id}")
-	public PagedResponse<Post> getPostsByTag(
+	public ResponseEntity<PagedResponse<Post>> getPostsByTag(
 			@RequestParam(value = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 			@RequestParam(value = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size,
 			@PathVariable(name = "id") Long id) {
-		return postService.getPostsByTag(id, page, size);
+		PagedResponse<Post> response = postService.getPostsByTag(id, page, size);
+		
+		return new ResponseEntity<PagedResponse<Post>>(response, HttpStatus.OK);
 	}
 
 	@PostMapping
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<?> addPost(@Valid @RequestBody PostRequest postRequest,
+	public ResponseEntity<PostResponse> addPost(@Valid @RequestBody PostRequest postRequest,
 			@CurrentUser UserPrincipal currentUser) {
-		return postService.addPost(postRequest, currentUser);
+		PostResponse postResponse = postService.addPost(postRequest, currentUser);
+		
+		return new ResponseEntity<PostResponse>(postResponse, HttpStatus.CREATED);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getPost(@PathVariable(name = "id") Long id) {
-		return postService.getPost(id);
+	public ResponseEntity<Post> getPost(@PathVariable(name = "id") Long id) {
+		Post post = postService.getPost(id);
+		
+		return new ResponseEntity<Post>(post, HttpStatus.OK);
 	}
 
 	@PutMapping("/{id}")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	public ResponseEntity<?> updatePost(@PathVariable(name = "id") Long id,
+	public ResponseEntity<Post> updatePost(@PathVariable(name = "id") Long id,
 			@Valid @RequestBody PostRequest newPostRequest, @CurrentUser UserPrincipal currentUser) {
-		return postService.updatePost(id, newPostRequest, currentUser);
+		Post post = postService.updatePost(id, newPostRequest, currentUser);
+		
+		return new ResponseEntity<Post>(post, HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	public ResponseEntity<?> deletePost(@PathVariable(name = "id") Long id, @CurrentUser UserPrincipal currentUser) {
-		return postService.deletePost(id, currentUser);
+	public ResponseEntity<ApiResponse> deletePost(@PathVariable(name = "id") Long id, @CurrentUser UserPrincipal currentUser) {
+		ApiResponse apiResponse = postService.deletePost(id, currentUser);
+		
+		return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.OK);
 	}
 }

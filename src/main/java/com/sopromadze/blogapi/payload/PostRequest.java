@@ -1,5 +1,7 @@
 package com.sopromadze.blogapi.payload;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.validation.constraints.NotBlank;
@@ -46,10 +48,16 @@ public class PostRequest {
 	}
 
 	public List<String> getTags() {
-		return tags;
+		
+		return tags == null ? Collections.emptyList() : new ArrayList<>(tags);
 	}
 
 	public void setTags(List<String> tags) {
-		this.tags = tags;
+		
+		if (tags == null) {
+			this.tags = null;
+		} else {
+			this.tags = Collections.unmodifiableList(tags);
+		}
 	}
 }

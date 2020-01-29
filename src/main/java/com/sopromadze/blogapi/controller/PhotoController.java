@@ -3,6 +3,7 @@ package com.sopromadze.blogapi.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,13 +16,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sopromadze.blogapi.payload.ApiResponse;
 import com.sopromadze.blogapi.payload.PagedResponse;
 import com.sopromadze.blogapi.payload.PhotoRequest;
 import com.sopromadze.blogapi.payload.PhotoResponse;
 import com.sopromadze.blogapi.security.CurrentUser;
 import com.sopromadze.blogapi.security.UserPrincipal;
 import com.sopromadze.blogapi.service.PhotoService;
-import com.sopromadze.blogapi.util.AppConstants;
+import com.sopromadze.blogapi.utils.AppConstants;
 
 @RestController
 @RequestMapping("/api/photos")
@@ -38,26 +40,35 @@ public class PhotoController {
 
 	@PostMapping
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<?> addPhoto(@Valid @RequestBody PhotoRequest photoRequest,
+	public ResponseEntity<PhotoResponse> addPhoto(@Valid @RequestBody PhotoRequest photoRequest,
 			@CurrentUser UserPrincipal currentUser) {
-		return photoService.addPhoto(photoRequest, currentUser);
+		PhotoResponse photoResponse = photoService.addPhoto(photoRequest, currentUser);
+		
+		return new ResponseEntity<PhotoResponse>(photoResponse, HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getPhoto(@PathVariable(name = "id") Long id) {
-		return photoService.getPhoto(id);
+	public ResponseEntity<PhotoResponse> getPhoto(@PathVariable(name = "id") Long id) {
+		PhotoResponse photoResponse = photoService.getPhoto(id);
+		
+		return new ResponseEntity<PhotoResponse>(photoResponse, HttpStatus.OK);
 	}
 
 	@PutMapping("/{id}")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	public ResponseEntity<?> updatePhoto(@PathVariable(name = "id") Long id,
+	public ResponseEntity<PhotoResponse> updatePhoto(@PathVariable(name = "id") Long id,
 			@Valid @RequestBody PhotoRequest photoRequest, @CurrentUser UserPrincipal currentUser) {
-		return photoService.updatePhoto(id, photoRequest, currentUser);
+		
+		PhotoResponse photoResponse = photoService.updatePhoto(id, photoRequest, currentUser);
+		
+		return new ResponseEntity<PhotoResponse>(photoResponse, HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	public ResponseEntity<?> deletePhoto(@PathVariable(name = "id") Long id, @CurrentUser UserPrincipal currentUser) {
-		return photoService.deletePhoto(id, currentUser);
+	public ResponseEntity<ApiResponse> deletePhoto(@PathVariable(name = "id") Long id, @CurrentUser UserPrincipal currentUser) {
+		ApiResponse apiResponse = photoService.deletePhoto(id, currentUser);
+		
+		return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.OK);
 	}
 }
