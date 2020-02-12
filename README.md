@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/coma123/Spring-Boot-Blog-REST-API.svg?branch=development)](https://travis-ci.com/coma123/Spring-Boot-Blog-REST-API)
+
 # Spring Boot, MySQL, Spring Security, JWT, JPA, Rest API
 
 Build Restful CRUD API for a blog using Spring Boot, Mysql, JPA and Hibernate.
