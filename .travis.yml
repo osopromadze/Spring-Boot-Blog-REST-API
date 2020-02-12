@@ -1,7 +1,6 @@
 language: java
 dist: trusty
 os: linux
-sudo: required
 addons:
   sonarcloud:
     organization: "coma123"
