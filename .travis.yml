@@ -1,11 +1,13 @@
 language: java
 dist: trusty
-sudo: true
+sudo: required
 addons:
   sonarcloud:
     organization: "coma123"
     token:
       secure: "6e2378f95e57a3e473bf52cdffd4971cdf23073f" # encrypted value of your token
+    branches: 
+      - development
 
 script:
   # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
@@ -13,3 +15,7 @@ script:
 
 before_install:
   - chmod +x mvnw
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'
