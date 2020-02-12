@@ -1,5 +1,6 @@
 language: java
 dist: trusty
+sudo: true
 addons:
   sonarcloud:
     organization: "coma123"
@@ -9,3 +10,6 @@ addons:
 script:
   # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=coma123_Spring-Boot-Blog-REST-API
+
+before_install:
+  - chmod +x mvnw
