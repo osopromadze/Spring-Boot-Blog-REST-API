@@ -1,14 +1,15 @@
 language: java
 dist: trusty
+root: linux
 sudo: required
 addons:
   sonarcloud:
     organization: "coma123"
     token:
       secure: "6e2378f95e57a3e473bf52cdffd4971cdf23073f"
-sonarqube:
-  branches: 
-    - development
+  sonarqube:
+    branches: 
+      - development
 script:
   # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=coma123_Spring-Boot-Blog-REST-API
