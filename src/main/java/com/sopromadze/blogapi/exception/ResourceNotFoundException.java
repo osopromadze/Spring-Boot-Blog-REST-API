@@ -9,7 +9,7 @@ import com.sopromadze.blogapi.payload.ApiResponse;
 public class ResourceNotFoundException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 	
-	private ApiResponse apiResponse;
+	private transient ApiResponse apiResponse;
 
 	private String resourceName;
 	private String fieldName;
