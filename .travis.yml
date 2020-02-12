@@ -1,13 +1,12 @@
 language: java
 dist: trusty
-root: linux
+os: linux
 sudo: required
 addons:
   sonarcloud:
     organization: "coma123"
     token:
       secure: "6e2378f95e57a3e473bf52cdffd4971cdf23073f"
-  sonarqube:
     branches: 
       - development
 script:
