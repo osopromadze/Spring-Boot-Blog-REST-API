@@ -7,7 +7,7 @@ import com.sopromadze.blogapi.payload.ApiResponse;
 public class ResponseEntityErrorException extends RuntimeException {
 	private static final long serialVersionUID = -3156815846745801694L;
 	
-	private ResponseEntity<ApiResponse> apiResponse;
+	private transient ResponseEntity<ApiResponse> apiResponse;
 	
 	public ResponseEntityErrorException(ResponseEntity<ApiResponse> apiResponse) {
 		this.apiResponse = apiResponse;
