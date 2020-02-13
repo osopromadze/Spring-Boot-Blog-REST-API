@@ -10,6 +10,11 @@
 .springBeans
 .sts4-cache
 /bin/
+/build/
+*.jar
+*.war
+*.ear
+*.db
 
 ### IntelliJ IDEA ###
 .idea
