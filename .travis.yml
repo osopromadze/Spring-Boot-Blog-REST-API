@@ -15,7 +15,6 @@ script:
 before_install:
   - chmod +x mvnw
   - mysql -e 'CREATE DATABASE IF NOT EXISTS blogapi;'
-  - mysql -u root --password='' < resources/blogapi.sql
 cache:
   directories:
     - '$HOME/.m2/repository'
