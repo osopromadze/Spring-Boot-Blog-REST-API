@@ -1,6 +1,8 @@
 language: java
 dist: trusty
 os: linux
+services:
+  - mysql
 addons:
   sonarcloud:
     organization: "coma123"
@@ -12,7 +14,10 @@ script:
 
 before_install:
   - chmod +x mvnw
+  - mysql -u root --password="" CREATE DATABASE IF NOT EXISTS blogapi;
+  - mysql -u root --password="" < resources/blogapi.sql
 cache:
   directories:
     - '$HOME/.m2/repository'
     - '$HOME/.sonar/cache'
+
