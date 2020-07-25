@@ -15,6 +15,7 @@ import javax.validation.constraints.NotBlank;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopromadze.blogapi.model.audit.UserDateAudit;
 import com.sopromadze.blogapi.model.user.User;
+import com.sopromadze.blogapi.payload.TodoRequest;
 
 @Entity
 @Table(name = "todos", uniqueConstraints = { @UniqueConstraint(columnNames = { "title" }) })
@@ -36,6 +37,11 @@ public class Todo extends UserDateAudit {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
+
+	public Todo(TodoRequest todoRequest) {
+		title = todoRequest.getTitle();
+		completed = todoRequest.isCompleted();
+	}
 
 	public Long getId() {
 		return id;

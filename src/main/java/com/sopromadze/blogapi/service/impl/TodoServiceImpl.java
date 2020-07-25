@@ -10,6 +10,7 @@ import static com.sopromadze.blogapi.utils.AppConstants.YOU_DON_T_HAVE_PERMISSIO
 import java.util.Collections;
 import java.util.List;
 
+import com.sopromadze.blogapi.payload.TodoRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,7 +33,7 @@ import com.sopromadze.blogapi.utils.AppConstants;
 
 @Service
 public class TodoServiceImpl implements TodoService {
-	
+
 
 	@Autowired
 	private TodoRepository todoRepository;
@@ -43,18 +44,17 @@ public class TodoServiceImpl implements TodoService {
 	@Override
 	public Todo completeTodo(Long id, UserPrincipal currentUser) {
 		Todo todo = todoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(TODO, ID, id));
-		
+
 		User user = userRepository.findByUsername(currentUser.getUsername())
 				.orElseThrow(() -> new ResourceNotFoundException(USER, USERNAME, currentUser.getUsername()));
-		
+
 		if (todo.getUser().getId().equals(user.getId())) {
 			todo.setCompleted(Boolean.TRUE);
-			Todo result = todoRepository.save(todo);
-			return result;
+			return todoRepository.save(todo);
 		}
-		
+
 		ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, YOU_DON_T_HAVE_PERMISSION_TO_MAKE_THIS_OPERATION);
-		
+
 		throw new UnauthorizedException(apiResponse);
 	}
 
@@ -65,12 +65,11 @@ public class TodoServiceImpl implements TodoService {
 				.orElseThrow(() -> new ResourceNotFoundException(USER, USERNAME, currentUser.getUsername()));
 		if (todo.getUser().getId().equals(user.getId())) {
 			todo.setCompleted(Boolean.FALSE);
-			Todo result = todoRepository.save(todo);
-			return result;
+			return todoRepository.save(todo);
 		}
-		
+
 		ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, YOU_DON_T_HAVE_PERMISSION_TO_MAKE_THIS_OPERATION);
-		
+
 		throw new UnauthorizedException(apiResponse);
 	}
 
@@ -80,7 +79,7 @@ public class TodoServiceImpl implements TodoService {
 		Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
 
 		Page<Todo> todos = todoRepository.findByCreatedBy(currentUser.getId(), pageable);
-		
+
 		List<Todo> content = todos.getNumberOfElements() == 0 ? Collections.emptyList() : todos.getContent();
 
 		return new PagedResponse<>(content, todos.getNumber(), todos.getSize(), todos.getTotalElements(),
@@ -88,12 +87,12 @@ public class TodoServiceImpl implements TodoService {
 	}
 
 	@Override
-	public Todo addTodo(Todo todo, UserPrincipal currentUser) {
+	public Todo addTodo(TodoRequest todoRequest, UserPrincipal currentUser) {
 		User user = userRepository.findByUsername(currentUser.getUsername())
 				.orElseThrow(() -> new ResourceNotFoundException(USER, USERNAME, currentUser.getUsername()));
+		Todo todo = new Todo(todoRequest);
 		todo.setUser(user);
-		Todo result = todoRepository.save(todo);
-		return result;
+		return todoRepository.save(todo);
 	}
 
 	@Override
@@ -101,30 +100,29 @@ public class TodoServiceImpl implements TodoService {
 		User user = userRepository.findByUsername(currentUser.getUsername())
 				.orElseThrow(() -> new ResourceNotFoundException(USER, USERNAME, currentUser.getUsername()));
 		Todo todo = todoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(TODO, ID, id));
-		
+
 		if(todo.getUser().getId().equals(user.getId())) {
 			return todo;
 		}
-		
+
 		ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, YOU_DON_T_HAVE_PERMISSION_TO_MAKE_THIS_OPERATION);
-		
+
 		throw new UnauthorizedException(apiResponse);
 	}
 
 	@Override
-	public Todo updateTodo(Long id, Todo newTodo, UserPrincipal currentUser) {
+	public Todo updateTodo(Long id, TodoRequest todoRequest, UserPrincipal currentUser) {
 		User user = userRepository.findByUsername(currentUser.getUsername())
 				.orElseThrow(() -> new ResourceNotFoundException(USER, USERNAME, currentUser.getUsername()));
 		Todo todo = todoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(TODO, ID, id));
 		if (todo.getUser().getId().equals(user.getId())) {
-			todo.setTitle(newTodo.getTitle());
-			todo.setCompleted(newTodo.getCompleted());
-			Todo result = todoRepository.save(todo);
-			return result;
+			todo.setTitle(todoRequest.getTitle());
+			todo.setCompleted(todoRequest.isCompleted());
+			return todoRepository.save(todo);
 		}
-		
+
 		ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, YOU_DON_T_HAVE_PERMISSION_TO_MAKE_THIS_OPERATION);
-		
+
 		throw new UnauthorizedException(apiResponse);
 	}
 
@@ -138,9 +136,9 @@ public class TodoServiceImpl implements TodoService {
 			todoRepository.deleteById(id);
 			return new ApiResponse(Boolean.TRUE, "You successfully deleted todo");
 		}
-		
+
 		ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, YOU_DON_T_HAVE_PERMISSION_TO_MAKE_THIS_OPERATION);
-		
+
 		throw new UnauthorizedException(apiResponse);
 	}
 

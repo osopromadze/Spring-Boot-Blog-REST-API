@@ -3,6 +3,7 @@ package com.sopromadze.blogapi.service;
 import com.sopromadze.blogapi.model.todo.Todo;
 import com.sopromadze.blogapi.payload.ApiResponse;
 import com.sopromadze.blogapi.payload.PagedResponse;
+import com.sopromadze.blogapi.payload.TodoRequest;
 import com.sopromadze.blogapi.security.UserPrincipal;
 
 public interface TodoService {
@@ -13,11 +14,11 @@ public interface TodoService {
 
 	PagedResponse<Todo> getAllTodos(UserPrincipal currentUser, int page, int size);
 
-	Todo addTodo(Todo todo, UserPrincipal currentUser);
+	Todo addTodo(TodoRequest todoRequest, UserPrincipal currentUser);
 
 	Todo getTodo(Long id, UserPrincipal currentUser);
 
-	Todo updateTodo(Long id, Todo newTodo, UserPrincipal currentUser);
+	Todo updateTodo(Long id, TodoRequest todoRequest, UserPrincipal currentUser);
 
 	ApiResponse deleteTodo(Long id, UserPrincipal currentUser);
 
