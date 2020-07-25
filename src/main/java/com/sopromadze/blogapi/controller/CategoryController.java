@@ -2,6 +2,7 @@ package com.sopromadze.blogapi.controller;
 
 import javax.validation.Valid;
 
+import com.sopromadze.blogapi.payload.CategoryRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,10 +40,10 @@ public class CategoryController {
 
 	@PostMapping
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<Category> addCategory(@Valid @RequestBody Category category,
-			@CurrentUser UserPrincipal currentUser) {
-		
-		return categoryService.addCategory(category, currentUser);
+	public ResponseEntity<Category> addCategory(@RequestBody @Valid CategoryRequest categoryRequest,
+												@CurrentUser UserPrincipal currentUser) {
+
+		return categoryService.addCategory(categoryRequest, currentUser);
 	}
 
 	@GetMapping("/{id}")
@@ -53,8 +54,8 @@ public class CategoryController {
 	@PutMapping("/{id}")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public ResponseEntity<Category> updateCategory(@PathVariable(name = "id") Long id,
-			@Valid @RequestBody Category category, @CurrentUser UserPrincipal currentUser) throws UnauthorizedException {
-		return categoryService.updateCategory(id, category, currentUser);
+												   @RequestBody @Valid CategoryRequest categoryRequest, @CurrentUser UserPrincipal currentUser) throws UnauthorizedException {
+		return categoryService.updateCategory(id, categoryRequest, currentUser);
 	}
 
 	@DeleteMapping("/{id}")
