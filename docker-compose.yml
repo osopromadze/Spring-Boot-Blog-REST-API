@@ -1,0 +1,29 @@
+version: '3'
+services:
+    mysql:
+        image: mysql
+        restart: always
+        environment:
+            MYSQL_DATABASE: 'blogapi'
+            MYSQL_USER: 'root'
+            MYSQL_PASSWORD: 'root'
+            MYSQL_ROOT_PASSWORD: 'root'
+        ports:
+            - '3306' 
+        networks: 
+            - production-network
+    application:
+        build:
+            dockerfile: ./Dockerfile
+            context: .
+        image: michel-eckhardt/spring-boot-blog
+        container_name: spring-boot-blog
+        ports:
+            - "8080:8080"    
+        networks: 
+            - production-network
+        depends_on: 
+            - "mysql"    
+networks: 
+    production-network:
+        driver: bridge
