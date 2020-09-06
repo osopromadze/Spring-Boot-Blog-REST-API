@@ -1,26 +1,9 @@
 package com.sopromadze.blogapi.service.impl;
 
-import static com.sopromadze.blogapi.utils.AppConstants.ALBUM;
-import static com.sopromadze.blogapi.utils.AppConstants.CREATED_AT;
-import static com.sopromadze.blogapi.utils.AppConstants.ID;
-import static com.sopromadze.blogapi.utils.AppConstants.PHOTO;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.stereotype.Service;
-
 import com.sopromadze.blogapi.exception.ResourceNotFoundException;
 import com.sopromadze.blogapi.exception.UnauthorizedException;
-import com.sopromadze.blogapi.model.album.Album;
-import com.sopromadze.blogapi.model.photo.Photo;
+import com.sopromadze.blogapi.model.Album;
+import com.sopromadze.blogapi.model.Photo;
 import com.sopromadze.blogapi.model.role.RoleName;
 import com.sopromadze.blogapi.payload.ApiResponse;
 import com.sopromadze.blogapi.payload.PagedResponse;
@@ -32,6 +15,22 @@ import com.sopromadze.blogapi.security.UserPrincipal;
 import com.sopromadze.blogapi.service.PhotoService;
 import com.sopromadze.blogapi.utils.AppConstants;
 import com.sopromadze.blogapi.utils.AppUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static com.sopromadze.blogapi.utils.AppConstants.ALBUM;
+import static com.sopromadze.blogapi.utils.AppConstants.CREATED_AT;
+import static com.sopromadze.blogapi.utils.AppConstants.ID;
+import static com.sopromadze.blogapi.utils.AppConstants.PHOTO;
 
 @Service
 public class PhotoServiceImpl implements PhotoService {
@@ -67,11 +66,9 @@ public class PhotoServiceImpl implements PhotoService {
 	@Override
 	public PhotoResponse getPhoto(Long id) {
 		Photo photo = photoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(PHOTO, ID, id));
-		
-		PhotoResponse photoResponse = new PhotoResponse(photo.getId(), photo.getTitle(), photo.getUrl(),
+
+		return new PhotoResponse(photo.getId(), photo.getTitle(), photo.getUrl(),
 				photo.getThumbnailUrl(), photo.getAlbum().getId());
-		
-		return photoResponse;
 	}
 
 	@Override
@@ -88,9 +85,9 @@ public class PhotoServiceImpl implements PhotoService {
 			return new PhotoResponse(updatedPhoto.getId(), updatedPhoto.getTitle(),
 					updatedPhoto.getUrl(), updatedPhoto.getThumbnailUrl(), updatedPhoto.getAlbum().getId());
 		}
-		
+
 		ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to update this photo");
-		
+
 		throw new UnauthorizedException(apiResponse);
 	}
 
@@ -105,9 +102,9 @@ public class PhotoServiceImpl implements PhotoService {
 			return new PhotoResponse(newPhoto.getId(), newPhoto.getTitle(), newPhoto.getUrl(),
 					newPhoto.getThumbnailUrl(), newPhoto.getAlbum().getId());
 		}
-		
+
 		ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to add photo in this album");
-		
+
 		throw new UnauthorizedException(apiResponse);
 	}
 
@@ -119,9 +116,9 @@ public class PhotoServiceImpl implements PhotoService {
 			photoRepository.deleteById(id);
 			return new ApiResponse(Boolean.TRUE, "Photo deleted successfully");
 		}
-		
+
 		ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to delete this photo");
-		
+
 		throw new UnauthorizedException(apiResponse);
 	}
 

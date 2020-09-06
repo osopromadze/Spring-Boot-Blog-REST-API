@@ -1,18 +1,9 @@
 package com.sopromadze.blogapi.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.stereotype.Service;
-
 import com.sopromadze.blogapi.exception.BlogapiException;
 import com.sopromadze.blogapi.exception.ResourceNotFoundException;
-import com.sopromadze.blogapi.model.comment.Comment;
-import com.sopromadze.blogapi.model.post.Post;
+import com.sopromadze.blogapi.model.Comment;
+import com.sopromadze.blogapi.model.Post;
 import com.sopromadze.blogapi.model.role.RoleName;
 import com.sopromadze.blogapi.model.user.User;
 import com.sopromadze.blogapi.payload.ApiResponse;
@@ -24,6 +15,14 @@ import com.sopromadze.blogapi.repository.UserRepository;
 import com.sopromadze.blogapi.security.UserPrincipal;
 import com.sopromadze.blogapi.service.CommentService;
 import com.sopromadze.blogapi.utils.AppUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Service;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -55,7 +54,7 @@ public class CommentServiceImpl implements CommentService {
 
 		Page<Comment> comments = commentRepository.findByPostId(postId, pageable);
 
-		return new PagedResponse<Comment>(comments.getContent(), comments.getNumber(), comments.getSize(),
+		return new PagedResponse<>(comments.getContent(), comments.getNumber(), comments.getSize(),
 				comments.getTotalElements(), comments.getTotalPages(), comments.isLast());
 	}
 
@@ -70,9 +69,7 @@ public class CommentServiceImpl implements CommentService {
 		comment.setPost(post);
 		comment.setName(currentUser.getUsername());
 		comment.setEmail(currentUser.getEmail());
-		Comment newComment = commentRepository.save(comment);
-		
-		return newComment;
+		return commentRepository.save(comment);
 	}
 
 	@Override
@@ -84,7 +81,7 @@ public class CommentServiceImpl implements CommentService {
 		if (comment.getPost().getId().equals(post.getId())) {
 			return comment;
 		}
-		
+
 		throw new BlogapiException(HttpStatus.BAD_REQUEST, COMMENT_DOES_NOT_BELONG_TO_POST);
 	}
 
@@ -103,10 +100,9 @@ public class CommentServiceImpl implements CommentService {
 		if (comment.getUser().getId().equals(currentUser.getId())
 				|| currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
 			comment.setBody(commentRequest.getBody());
-			Comment updatedComment = commentRepository.save(comment);
-			return updatedComment;
+			return commentRepository.save(comment);
 		}
-		
+
 		throw new BlogapiException(HttpStatus.UNAUTHORIZED, YOU_DON_T_HAVE_PERMISSION_TO + "update" + THIS_COMMENT);
 	}
 

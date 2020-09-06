@@ -1,7 +1,20 @@
 package com.sopromadze.blogapi.controller;
 
-import javax.validation.Valid;
-
+import com.sopromadze.blogapi.model.Album;
+import com.sopromadze.blogapi.model.Post;
+import com.sopromadze.blogapi.model.user.User;
+import com.sopromadze.blogapi.payload.ApiResponse;
+import com.sopromadze.blogapi.payload.InfoRequest;
+import com.sopromadze.blogapi.payload.PagedResponse;
+import com.sopromadze.blogapi.payload.UserIdentityAvailability;
+import com.sopromadze.blogapi.payload.UserProfile;
+import com.sopromadze.blogapi.payload.UserSummary;
+import com.sopromadze.blogapi.security.CurrentUser;
+import com.sopromadze.blogapi.security.UserPrincipal;
+import com.sopromadze.blogapi.service.AlbumService;
+import com.sopromadze.blogapi.service.PostService;
+import com.sopromadze.blogapi.service.UserService;
+import com.sopromadze.blogapi.utils.AppConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,21 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sopromadze.blogapi.model.album.Album;
-import com.sopromadze.blogapi.model.post.Post;
-import com.sopromadze.blogapi.model.user.User;
-import com.sopromadze.blogapi.payload.ApiResponse;
-import com.sopromadze.blogapi.payload.InfoRequest;
-import com.sopromadze.blogapi.payload.PagedResponse;
-import com.sopromadze.blogapi.payload.UserIdentityAvailability;
-import com.sopromadze.blogapi.payload.UserProfile;
-import com.sopromadze.blogapi.payload.UserSummary;
-import com.sopromadze.blogapi.security.CurrentUser;
-import com.sopromadze.blogapi.security.UserPrincipal;
-import com.sopromadze.blogapi.service.AlbumService;
-import com.sopromadze.blogapi.service.PostService;
-import com.sopromadze.blogapi.service.UserService;
-import com.sopromadze.blogapi.utils.AppConstants;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/users")
@@ -48,28 +47,28 @@ public class UserController {
 	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<UserSummary> getCurrentUser(@CurrentUser UserPrincipal currentUser) {
 		UserSummary userSummary = userService.getCurrentUser(currentUser);
-		
-		return new ResponseEntity<UserSummary>(userSummary, HttpStatus.OK);
+
+		return new ResponseEntity< >(userSummary, HttpStatus.OK);
 	}
 
 	@GetMapping("/checkUsernameAvailability")
 	public ResponseEntity<UserIdentityAvailability> checkUsernameAvailability(@RequestParam(value = "username") String username) {
 		UserIdentityAvailability userIdentityAvailability = userService.checkUsernameAvailability(username);
-		
-		return new ResponseEntity<UserIdentityAvailability>(userIdentityAvailability, HttpStatus.OK);
+
+		return new ResponseEntity< >(userIdentityAvailability, HttpStatus.OK);
 	}
 
 	@GetMapping("/checkEmailAvailability")
 	public ResponseEntity<UserIdentityAvailability> checkEmailAvailability(@RequestParam(value = "email") String email) {
-		UserIdentityAvailability userIdentityAvailability =  userService.checkEmailAvailability(email);
-		return new ResponseEntity<UserIdentityAvailability>(userIdentityAvailability, HttpStatus.OK);
+		UserIdentityAvailability userIdentityAvailability = userService.checkEmailAvailability(email);
+		return new ResponseEntity< >(userIdentityAvailability, HttpStatus.OK);
 	}
 
 	@GetMapping("/{username}/profile")
 	public ResponseEntity<UserProfile> getUSerProfile(@PathVariable(value = "username") String username) {
 		UserProfile userProfile = userService.getUserProfile(username);
-		
-		return new ResponseEntity<UserProfile>(userProfile, HttpStatus.OK);
+
+		return new ResponseEntity< >(userProfile, HttpStatus.OK);
 	}
 
 	@GetMapping("/{username}/posts")
@@ -77,8 +76,8 @@ public class UserController {
 			@RequestParam(value = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 			@RequestParam(value = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
 		PagedResponse<Post> response = postService.getPostsByCreatedBy(username, page, size);
-		
-		return new ResponseEntity<PagedResponse<Post>>(response, HttpStatus.OK);
+
+		return new ResponseEntity<  >(response, HttpStatus.OK);
 	}
 
 	@GetMapping("/{username}/albums")
@@ -87,16 +86,16 @@ public class UserController {
 			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
 
 		PagedResponse<Album> response = albumService.getUserAlbums(username, page, size);
-		
-		return new ResponseEntity<PagedResponse<Album>>(response, HttpStatus.OK);
+
+		return new ResponseEntity<  >(response, HttpStatus.OK);
 	}
 
 	@PostMapping
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
 		User newUser = userService.addUser(user);
-		
-		return new ResponseEntity<User>(newUser, HttpStatus.CREATED);
+
+		return new ResponseEntity< >(newUser, HttpStatus.CREATED);
 	}
 
 	@PutMapping("/{username}")
@@ -104,8 +103,8 @@ public class UserController {
 	public ResponseEntity<User> updateUser(@Valid @RequestBody User newUser,
 			@PathVariable(value = "username") String username, @CurrentUser UserPrincipal currentUser) {
 		User updatedUSer = userService.updateUser(newUser, username, currentUser);
-		
-		return new ResponseEntity<User>(updatedUSer, HttpStatus.CREATED);
+
+		return new ResponseEntity< >(updatedUSer, HttpStatus.CREATED);
 	}
 
 	@DeleteMapping("/{username}")
@@ -113,24 +112,24 @@ public class UserController {
 	public ResponseEntity<ApiResponse> deleteUser(@PathVariable(value = "username") String username,
 			@CurrentUser UserPrincipal currentUser) {
 		ApiResponse apiResponse = userService.deleteUser(username, currentUser);
-		
-		return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.OK);
+
+		return new ResponseEntity< >(apiResponse, HttpStatus.OK);
 	}
 
 	@PutMapping("/{username}/giveAdmin")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ApiResponse> giveAdmin(@PathVariable(name = "username") String username) {
 		ApiResponse apiResponse = userService.giveAdmin(username);
-		
-		return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.OK);
+
+		return new ResponseEntity< >(apiResponse, HttpStatus.OK);
 	}
 
 	@PutMapping("/{username}/takeAdmin")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ApiResponse> takeAdmin(@PathVariable(name = "username") String username) {
 		ApiResponse apiResponse = userService.removeAdmin(username);
-		
-		return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.OK);
+
+		return new ResponseEntity< >(apiResponse, HttpStatus.OK);
 	}
 
 	@PutMapping("/setOrUpdateInfo")
@@ -138,8 +137,8 @@ public class UserController {
 	public ResponseEntity<UserProfile> setAddress(@CurrentUser UserPrincipal currentUser,
 			@Valid @RequestBody InfoRequest infoRequest) {
 		UserProfile userProfile = userService.setOrUpdateInfo(currentUser, infoRequest);
-		
-		return new ResponseEntity<UserProfile>(userProfile, HttpStatus.OK);
+
+		return new ResponseEntity< >(userProfile, HttpStatus.OK);
 	}
 
 }

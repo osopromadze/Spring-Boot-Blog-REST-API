@@ -1,7 +1,18 @@
 package com.sopromadze.blogapi.controller;
 
-import javax.validation.Valid;
-
+import com.sopromadze.blogapi.exception.ResponseEntityErrorException;
+import com.sopromadze.blogapi.model.Album;
+import com.sopromadze.blogapi.payload.AlbumResponse;
+import com.sopromadze.blogapi.payload.ApiResponse;
+import com.sopromadze.blogapi.payload.PagedResponse;
+import com.sopromadze.blogapi.payload.PhotoResponse;
+import com.sopromadze.blogapi.payload.request.AlbumRequest;
+import com.sopromadze.blogapi.security.CurrentUser;
+import com.sopromadze.blogapi.security.UserPrincipal;
+import com.sopromadze.blogapi.service.AlbumService;
+import com.sopromadze.blogapi.service.PhotoService;
+import com.sopromadze.blogapi.utils.AppConstants;
+import com.sopromadze.blogapi.utils.AppUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,19 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sopromadze.blogapi.exception.ResponseEntityErrorException;
-import com.sopromadze.blogapi.model.album.Album;
-import com.sopromadze.blogapi.payload.AlbumResponse;
-import com.sopromadze.blogapi.payload.ApiResponse;
-import com.sopromadze.blogapi.payload.PagedResponse;
-import com.sopromadze.blogapi.payload.PhotoResponse;
-import com.sopromadze.blogapi.payload.request.AlbumRequest;
-import com.sopromadze.blogapi.security.CurrentUser;
-import com.sopromadze.blogapi.security.UserPrincipal;
-import com.sopromadze.blogapi.service.AlbumService;
-import com.sopromadze.blogapi.service.PhotoService;
-import com.sopromadze.blogapi.utils.AppConstants;
-import com.sopromadze.blogapi.utils.AppUtils;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/albums")
@@ -39,7 +38,7 @@ public class AlbumController {
 
 	@Autowired
 	private PhotoService photoService;
-	
+
 	@ExceptionHandler(ResponseEntityErrorException.class)
 	public ResponseEntity<ApiResponse> handleExceptions(ResponseEntityErrorException exception) {
 		return exception.getApiResponse();
@@ -50,7 +49,7 @@ public class AlbumController {
 			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
 		AppUtils.validatePageNumberAndSize(page, size);
-		
+
 		return albumService.getAllAlbums(page, size);
 	}
 
@@ -82,10 +81,10 @@ public class AlbumController {
 	public ResponseEntity<PagedResponse<PhotoResponse>> getAllPhotosByAlbum(@PathVariable(name = "id") Long id,
 			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
-		
+
 		PagedResponse<PhotoResponse> response = photoService.getAllPhotosByAlbum(id, page, size);
-		
-		return new ResponseEntity<PagedResponse<PhotoResponse>>(response, HttpStatus.OK);
+
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 }

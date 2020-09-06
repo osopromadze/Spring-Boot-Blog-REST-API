@@ -1,6 +1,10 @@
 package com.sopromadze.blogapi.model.user;
 
-import java.time.Instant;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sopromadze.blogapi.model.audit.UserDateAudit;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,11 +15,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sopromadze.blogapi.model.audit.UserDateAudit;
+import java.time.Instant;
 
 @Entity
+@Data
+@NoArgsConstructor
 @Table(name = "address")
 public class Address extends UserDateAudit {
 	private static final long serialVersionUID = 1L;
@@ -43,10 +47,6 @@ public class Address extends UserDateAudit {
 	@OneToOne(mappedBy = "address")
 	private User user;
 
-	public Address() {
-
-	}
-
 	public Address(String street, String suite, String city, String zipcode, Geo geo) {
 		this.street = street;
 		this.suite = suite;
@@ -55,53 +55,9 @@ public class Address extends UserDateAudit {
 		this.geo = geo;
 	}
 
-	public String getStreet() {
-		return street;
-	}
-
-	public void setStreet(String street) {
-		this.street = street;
-	}
-
-	public String getSuite() {
-		return suite;
-	}
-
-	public void setSuite(String suite) {
-		this.suite = suite;
-	}
-
-	public String getCity() {
-		return city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public String getZipcode() {
-		return zipcode;
-	}
-
-	public void setZipcode(String zipcode) {
-		this.zipcode = zipcode;
-	}
-
 	@JsonIgnore
 	public Long getId() {
 		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Geo getGeo() {
-		return geo;
-	}
-
-	public void setGeo(Geo geo) {
-		this.geo = geo;
 	}
 
 	@JsonIgnore

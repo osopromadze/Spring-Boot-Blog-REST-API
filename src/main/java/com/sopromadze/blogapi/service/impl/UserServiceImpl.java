@@ -1,14 +1,5 @@
 package com.sopromadze.blogapi.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
 import com.sopromadze.blogapi.exception.AccessDeniedException;
 import com.sopromadze.blogapi.exception.AppException;
 import com.sopromadze.blogapi.exception.BadRequestException;
@@ -30,6 +21,14 @@ import com.sopromadze.blogapi.repository.RoleRepository;
 import com.sopromadze.blogapi.repository.UserRepository;
 import com.sopromadze.blogapi.security.UserPrincipal;
 import com.sopromadze.blogapi.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -93,8 +92,7 @@ public class UserServiceImpl implements UserService {
 		user.setRoles(roles);
 
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		User result = userRepository.save(user);
-		return result;
+		return userRepository.save(user);
 	}
 
 	@Override
@@ -111,8 +109,7 @@ public class UserServiceImpl implements UserService {
 			user.setWebsite(newUser.getWebsite());
 			user.setCompany(newUser.getCompany());
 
-			User updatedUser = userRepository.save(user);
-			return updatedUser;
+			return userRepository.save(user);
 
 		}
 
@@ -125,11 +122,12 @@ public class UserServiceImpl implements UserService {
 	public ApiResponse deleteUser(String username, UserPrincipal currentUser) {
 		User user = userRepository.findByUsername(username)
 				.orElseThrow(() -> new ResourceNotFoundException("User", "id", username));
-		if (!user.getId().equals(currentUser.getId()) || !currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
+		if (!user.getId().equals(currentUser.getId()) || !currentUser.getAuthorities()
+				.contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
 			ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to delete profile of: " + username);
 			throw new AccessDeniedException(apiResponse);
 		}
-		
+
 		userRepository.deleteById(user.getId());
 
 		return new ApiResponse(Boolean.TRUE, "You successfully deleted profile of: " + username);
@@ -179,13 +177,12 @@ public class UserServiceImpl implements UserService {
 
 			Long postCount = postRepository.countByCreatedBy(updatedUser.getId());
 
-			UserProfile userProfile = new UserProfile(updatedUser.getId(), updatedUser.getUsername(),
+			return new UserProfile(updatedUser.getId(), updatedUser.getUsername(),
 					updatedUser.getFirstName(), updatedUser.getLastName(), updatedUser.getCreatedAt(),
 					updatedUser.getEmail(), updatedUser.getAddress(), updatedUser.getPhone(), updatedUser.getWebsite(),
 					updatedUser.getCompany(), postCount);
-			return userProfile;
 		}
-		
+
 		ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to update users profile", HttpStatus.FORBIDDEN);
 		throw new AccessDeniedException(apiResponse);
 	}

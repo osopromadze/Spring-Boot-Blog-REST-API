@@ -1,6 +1,6 @@
 package com.sopromadze.blogapi.service;
 
-import com.sopromadze.blogapi.model.comment.Comment;
+import com.sopromadze.blogapi.model.Comment;
 import com.sopromadze.blogapi.payload.ApiResponse;
 import com.sopromadze.blogapi.payload.CommentRequest;
 import com.sopromadze.blogapi.payload.PagedResponse;

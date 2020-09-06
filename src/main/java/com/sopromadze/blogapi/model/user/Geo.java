@@ -1,6 +1,9 @@
 package com.sopromadze.blogapi.model.user;
 
-import java.time.Instant;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sopromadze.blogapi.model.audit.UserDateAudit;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,11 +12,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sopromadze.blogapi.model.audit.UserDateAudit;
+import java.time.Instant;
 
 @Entity
+@Data
+@NoArgsConstructor
 @Table(name = "geo")
 public class Geo extends UserDateAudit {
 	private static final long serialVersionUID = 1L;
@@ -32,37 +35,9 @@ public class Geo extends UserDateAudit {
 	@OneToOne(mappedBy = "geo")
 	private Address address;
 
-	public Geo() {
-
-	}
-
 	public Geo(String lat, String lng) {
 		this.lat = lat;
 		this.lng = lng;
-	}
-
-	public String getLat() {
-		return lat;
-	}
-
-	public void setLat(String lat) {
-		this.lat = lat;
-	}
-
-	public String getLng() {
-		return lng;
-	}
-
-	public void setLng(String lng) {
-		this.lng = lng;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	@JsonIgnore

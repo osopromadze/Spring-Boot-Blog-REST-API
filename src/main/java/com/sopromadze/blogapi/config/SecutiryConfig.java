@@ -1,5 +1,9 @@
 package com.sopromadze.blogapi.config;
 
+import com.sopromadze.blogapi.repository.UserRepository;
+import com.sopromadze.blogapi.security.JwtAuthenticationEntryPoint;
+import com.sopromadze.blogapi.security.JwtAuthenticationFilter;
+import com.sopromadze.blogapi.service.impl.CustomUserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,62 +20,57 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.sopromadze.blogapi.repository.UserRepository;
-import com.sopromadze.blogapi.security.JwtAuthenticationEntryPoint;
-import com.sopromadze.blogapi.security.JwtAuthenticationFilter;
-import com.sopromadze.blogapi.service.impl.CustomUserDetailsServiceImpl;
-
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(
-        securedEnabled = true,
-        jsr250Enabled = true,
-        prePostEnabled = true)
+		securedEnabled = true,
+		jsr250Enabled = true,
+		prePostEnabled = true)
 public class SecutiryConfig extends WebSecurityConfigurerAdapter {
-    private final CustomUserDetailsServiceImpl customUserDetailsService;
-    private final JwtAuthenticationEntryPoint unauthorizedHandler;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	private final CustomUserDetailsServiceImpl customUserDetailsService;
+	private final JwtAuthenticationEntryPoint unauthorizedHandler;
+	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    @Autowired
-    public SecutiryConfig(UserRepository userRepository, CustomUserDetailsServiceImpl customUserDetailsService, JwtAuthenticationEntryPoint unauthorizedHandler,  JwtAuthenticationFilter jwtAuthenticationFilter) {
-        this.customUserDetailsService = customUserDetailsService;
-        this.unauthorizedHandler = unauthorizedHandler;
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-    }
+	@Autowired
+	public SecutiryConfig(UserRepository userRepository, CustomUserDetailsServiceImpl customUserDetailsService,
+			JwtAuthenticationEntryPoint unauthorizedHandler, JwtAuthenticationFilter jwtAuthenticationFilter) {
+		this.customUserDetailsService = customUserDetailsService;
+		this.unauthorizedHandler = unauthorizedHandler;
+		this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+	}
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-    	
-        http.cors().and().csrf().disable()
-                .exceptionHandling()
-                    .authenticationEntryPoint(unauthorizedHandler)
-                    .and()
-                .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                    .and()
-                .authorizeRequests()
-                    .antMatchers(HttpMethod.GET, "/api/**").permitAll()
-                    .antMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
-                    .antMatchers(HttpMethod.GET, "/api/users/checkUsernameAvailability", "/api/users/checkEmailAvailability").permitAll()
-                .anyRequest().authenticated();
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
 
-        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+		http.cors().and().csrf().disable()
+				.exceptionHandling()
+				.authenticationEntryPoint(unauthorizedHandler)
+				.and()
+				.sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				.and()
+				.authorizeRequests()
+				.antMatchers(HttpMethod.GET, "/api/**").permitAll()
+				.antMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+				.antMatchers(HttpMethod.GET, "/api/users/checkUsernameAvailability", "/api/users/checkEmailAvailability").permitAll()
+				.anyRequest().authenticated();
 
+		http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-    }
+	}
 
-    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        authenticationManagerBuilder.userDetailsService(customUserDetailsService)
-                .passwordEncoder(passwordEncoder());
-    }
+	public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+		authenticationManagerBuilder.userDetailsService(customUserDetailsService)
+				.passwordEncoder(passwordEncoder());
+	}
 
-    @Bean(BeanIds.AUTHENTICATION_MANAGER)
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
+	@Bean(BeanIds.AUTHENTICATION_MANAGER)
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
+	}
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 }

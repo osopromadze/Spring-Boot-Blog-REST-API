@@ -1,11 +1,17 @@
 package com.sopromadze.blogapi.controller;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.validation.Valid;
-
+import com.sopromadze.blogapi.exception.AppException;
+import com.sopromadze.blogapi.exception.BlogapiException;
+import com.sopromadze.blogapi.model.role.Role;
+import com.sopromadze.blogapi.model.role.RoleName;
+import com.sopromadze.blogapi.model.user.User;
+import com.sopromadze.blogapi.payload.ApiResponse;
+import com.sopromadze.blogapi.payload.JwtAuthenticationResponse;
+import com.sopromadze.blogapi.payload.LoginRequest;
+import com.sopromadze.blogapi.payload.SignUpRequest;
+import com.sopromadze.blogapi.repository.RoleRepository;
+import com.sopromadze.blogapi.repository.UserRepository;
+import com.sopromadze.blogapi.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,18 +26,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.sopromadze.blogapi.exception.AppException;
-import com.sopromadze.blogapi.exception.BlogapiException;
-import com.sopromadze.blogapi.model.role.Role;
-import com.sopromadze.blogapi.model.role.RoleName;
-import com.sopromadze.blogapi.model.user.User;
-import com.sopromadze.blogapi.payload.ApiResponse;
-import com.sopromadze.blogapi.payload.JwtAuthenticationResponse;
-import com.sopromadze.blogapi.payload.LoginRequest;
-import com.sopromadze.blogapi.payload.SignUpRequest;
-import com.sopromadze.blogapi.repository.RoleRepository;
-import com.sopromadze.blogapi.repository.UserRepository;
-import com.sopromadze.blogapi.security.JwtTokenProvider;
+import javax.validation.Valid;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -73,7 +71,7 @@ public class AuthController {
 		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
 			throw new BlogapiException(HttpStatus.BAD_REQUEST, "Email is already taken");
 		}
-		
+
 		String firstName = signUpRequest.getFirstName().toLowerCase();
 
 		String lastName = signUpRequest.getLastName().toLowerCase();
@@ -81,13 +79,13 @@ public class AuthController {
 		String username = signUpRequest.getUsername().toLowerCase();
 
 		String email = signUpRequest.getEmail().toLowerCase();
-		
+
 		String password = passwordEncoder.encode(signUpRequest.getPassword());
 
 		User user = new User(firstName, lastName, username, email, password);
 
 		List<Role> roles = new ArrayList<>();
-		
+
 		if (userRepository.count() == 0) {
 			roles.add(roleRepository.findByName(RoleName.ROLE_USER)
 					.orElseThrow(() -> new AppException(USER_ROLE_NOT_SET)));

@@ -1,14 +1,13 @@
 package com.sopromadze.blogapi.exception;
 
+import com.sopromadze.blogapi.payload.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
-import com.sopromadze.blogapi.payload.ApiResponse;
 
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
 public class ResourceNotFoundException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
-	
+
 	private transient ApiResponse apiResponse;
 
 	private String resourceName;
@@ -37,10 +36,10 @@ public class ResourceNotFoundException extends RuntimeException {
 	public ApiResponse getApiResponse() {
 		return apiResponse;
 	}
-	
+
 	private void setApiResponse() {
 		String message = String.format("%s not found with %s: '%s'", resourceName, fieldName, fieldValue);
-		
+
 		apiResponse = new ApiResponse(Boolean.FALSE, message);
 	}
 }

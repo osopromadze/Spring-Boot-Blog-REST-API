@@ -1,13 +1,12 @@
 package com.sopromadze.blogapi.service;
 
-import org.springframework.http.ResponseEntity;
-
-import com.sopromadze.blogapi.model.album.Album;
+import com.sopromadze.blogapi.model.Album;
 import com.sopromadze.blogapi.payload.AlbumResponse;
 import com.sopromadze.blogapi.payload.ApiResponse;
 import com.sopromadze.blogapi.payload.PagedResponse;
 import com.sopromadze.blogapi.payload.request.AlbumRequest;
 import com.sopromadze.blogapi.security.UserPrincipal;
+import org.springframework.http.ResponseEntity;
 
 public interface AlbumService {
 
