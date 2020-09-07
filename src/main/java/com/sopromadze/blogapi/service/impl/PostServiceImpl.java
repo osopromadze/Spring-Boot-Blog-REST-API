@@ -1,33 +1,12 @@
 package com.sopromadze.blogapi.service.impl;
 
-import static com.sopromadze.blogapi.utils.AppConstants.CATEGORY;
-import static com.sopromadze.blogapi.utils.AppConstants.CREATED_AT;
-import static com.sopromadze.blogapi.utils.AppConstants.ID;
-import static com.sopromadze.blogapi.utils.AppConstants.POST;
-import static com.sopromadze.blogapi.utils.AppConstants.TAG;
-import static com.sopromadze.blogapi.utils.AppConstants.USER;
-import static com.sopromadze.blogapi.utils.AppConstants.USERNAME;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.stereotype.Service;
-
 import com.sopromadze.blogapi.exception.BadRequestException;
 import com.sopromadze.blogapi.exception.ResourceNotFoundException;
 import com.sopromadze.blogapi.exception.UnauthorizedException;
-import com.sopromadze.blogapi.model.category.Category;
-import com.sopromadze.blogapi.model.post.Post;
+import com.sopromadze.blogapi.model.Category;
+import com.sopromadze.blogapi.model.Post;
 import com.sopromadze.blogapi.model.role.RoleName;
-import com.sopromadze.blogapi.model.tag.Tag;
+import com.sopromadze.blogapi.model.Tag;
 import com.sopromadze.blogapi.model.user.User;
 import com.sopromadze.blogapi.payload.ApiResponse;
 import com.sopromadze.blogapi.payload.PagedResponse;
@@ -41,6 +20,26 @@ import com.sopromadze.blogapi.security.UserPrincipal;
 import com.sopromadze.blogapi.service.PostService;
 import com.sopromadze.blogapi.utils.AppConstants;
 import com.sopromadze.blogapi.utils.AppUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static com.sopromadze.blogapi.utils.AppConstants.CATEGORY;
+import static com.sopromadze.blogapi.utils.AppConstants.CREATED_AT;
+import static com.sopromadze.blogapi.utils.AppConstants.ID;
+import static com.sopromadze.blogapi.utils.AppConstants.POST;
+import static com.sopromadze.blogapi.utils.AppConstants.TAG;
+import static com.sopromadze.blogapi.utils.AppConstants.USER;
+import static com.sopromadze.blogapi.utils.AppConstants.USERNAME;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -125,8 +124,7 @@ public class PostServiceImpl implements PostService {
 			post.setTitle(newPostRequest.getTitle());
 			post.setBody(newPostRequest.getBody());
 			post.setCategory(category);
-			Post updatedPost = postRepository.save(post);
-			return updatedPost;
+			return postRepository.save(post);
 		}
 		ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to edit this post");
 
@@ -153,8 +151,8 @@ public class PostServiceImpl implements PostService {
 				.orElseThrow(() -> new ResourceNotFoundException(USER, ID, 1L));
 		Category category = categoryRepository.findById(postRequest.getCategoryId())
 				.orElseThrow(() -> new ResourceNotFoundException(CATEGORY, ID, postRequest.getCategoryId()));
-		
-		List<Tag> tags = new ArrayList<Tag>(postRequest.getTags().size());
+
+		List<Tag> tags = new ArrayList< >(postRequest.getTags().size());
 
 		for (String name : postRequest.getTags()) {
 			Tag tag = tagRepository.findByName(name);
@@ -178,7 +176,7 @@ public class PostServiceImpl implements PostService {
 		postResponse.setBody(newPost.getBody());
 		postResponse.setCategory(newPost.getCategory().getName());
 
-		List<String> tagNames = new ArrayList<String>(newPost.getTags().size());
+		List<String> tagNames = new ArrayList< >(newPost.getTags().size());
 
 		for (Tag tag : newPost.getTags()) {
 			tagNames.add(tag.getName());
@@ -191,8 +189,7 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public Post getPost(Long id) {
-		Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(POST, ID, id));
-		return post;
+		return postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(POST, ID, id));
 	}
 
 	private void validatePageNumberAndSize(int page, int size) {

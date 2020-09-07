@@ -1,7 +1,13 @@
 package com.sopromadze.blogapi.controller;
 
-import javax.validation.Valid;
-
+import com.sopromadze.blogapi.exception.UnauthorizedException;
+import com.sopromadze.blogapi.model.Category;
+import com.sopromadze.blogapi.payload.ApiResponse;
+import com.sopromadze.blogapi.payload.PagedResponse;
+import com.sopromadze.blogapi.security.CurrentUser;
+import com.sopromadze.blogapi.security.UserPrincipal;
+import com.sopromadze.blogapi.service.CategoryService;
+import com.sopromadze.blogapi.utils.AppConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,14 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sopromadze.blogapi.exception.UnauthorizedException;
-import com.sopromadze.blogapi.model.category.Category;
-import com.sopromadze.blogapi.payload.ApiResponse;
-import com.sopromadze.blogapi.payload.PagedResponse;
-import com.sopromadze.blogapi.security.CurrentUser;
-import com.sopromadze.blogapi.security.UserPrincipal;
-import com.sopromadze.blogapi.service.CategoryService;
-import com.sopromadze.blogapi.utils.AppConstants;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/categories")
@@ -41,7 +40,7 @@ public class CategoryController {
 	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<Category> addCategory(@Valid @RequestBody Category category,
 			@CurrentUser UserPrincipal currentUser) {
-		
+
 		return categoryService.addCategory(category, currentUser);
 	}
 

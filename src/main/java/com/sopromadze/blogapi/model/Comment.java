@@ -1,4 +1,11 @@
-package com.sopromadze.blogapi.model.comment;
+package com.sopromadze.blogapi.model;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sopromadze.blogapi.model.audit.UserDateAudit;
+import com.sopromadze.blogapi.model.user.User;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,16 +20,14 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sopromadze.blogapi.model.audit.UserDateAudit;
-import com.sopromadze.blogapi.model.post.Post;
-import com.sopromadze.blogapi.model.user.User;
-
+@EqualsAndHashCode(callSuper = true)
 @Entity
+@Data
+@NoArgsConstructor
 @Table(name = "comments")
 public class Comment extends UserDateAudit {
-	private static final long serialVersionUID = 1L;
-	
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -51,43 +56,7 @@ public class Comment extends UserDateAudit {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Comment(){
-
-    }
-
     public Comment(@NotBlank @Size(min = 10, message = "Comment body must be minimum 10 characters") String body) {
-        this.body = body;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
         this.body = body;
     }
 
@@ -96,16 +65,8 @@ public class Comment extends UserDateAudit {
         return post;
     }
 
-    public void setPost(Post post) {
-        this.post = post;
-    }
-
     @JsonIgnore
     public User getUser() {
         return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 }

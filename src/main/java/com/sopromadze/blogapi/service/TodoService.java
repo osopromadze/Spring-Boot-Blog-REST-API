@@ -1,6 +1,6 @@
 package com.sopromadze.blogapi.service;
 
-import com.sopromadze.blogapi.model.todo.Todo;
+import com.sopromadze.blogapi.model.Todo;
 import com.sopromadze.blogapi.payload.ApiResponse;
 import com.sopromadze.blogapi.payload.PagedResponse;
 import com.sopromadze.blogapi.security.UserPrincipal;

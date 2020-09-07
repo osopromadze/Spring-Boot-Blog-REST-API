@@ -1,6 +1,10 @@
 package com.sopromadze.blogapi.model.user;
 
-import java.time.Instant;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sopromadze.blogapi.model.audit.UserDateAudit;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,11 +13,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.time.Instant;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sopromadze.blogapi.model.audit.UserDateAudit;
-
+@EqualsAndHashCode(callSuper = true)
 @Entity
+@Data
+@NoArgsConstructor
 @Table(name = "company")
 public class Company extends UserDateAudit {
 	private static final long serialVersionUID = 1L;
@@ -34,37 +39,10 @@ public class Company extends UserDateAudit {
 	@OneToOne(mappedBy = "company")
 	private User user;
 
-	public Company() {
-
-	}
 
 	public Company(String name, String catchPhrase, String bs) {
 		this.name = name;
 		this.catchPhrase = catchPhrase;
-		this.bs = bs;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getCatchPhrase() {
-		return catchPhrase;
-	}
-
-	public void setCatchPhrase(String catchPhrase) {
-		this.catchPhrase = catchPhrase;
-	}
-
-	public String getBs() {
-		return bs;
-	}
-
-	public void setBs(String bs) {
 		this.bs = bs;
 	}
 

@@ -1,8 +1,11 @@
-package com.sopromadze.blogapi.model.tag;
+package com.sopromadze.blogapi.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sopromadze.blogapi.model.audit.UserDateAudit;
+import com.sopromadze.blogapi.model.Post;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,12 +17,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sopromadze.blogapi.model.audit.UserDateAudit;
-import com.sopromadze.blogapi.model.post.Post;
-
+@EqualsAndHashCode(callSuper = true)
 @Entity
+@Data
+@NoArgsConstructor
 @Table(name = "tags")
 //@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Tag extends UserDateAudit {
@@ -38,28 +43,8 @@ public class Tag extends UserDateAudit {
 	@JoinTable(name = "post_tag", joinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"))
 	private List<Post> posts;
 
-	public Tag() {
-
-	}
-
 	public Tag(String name) {
 		super();
-		this.name = name;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
 		this.name = name;
 	}
 

@@ -1,8 +1,12 @@
-package com.sopromadze.blogapi.model.post;
+package com.sopromadze.blogapi.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.sopromadze.blogapi.model.audit.UserDateAudit;
+import com.sopromadze.blogapi.model.user.User;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,17 +22,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.sopromadze.blogapi.model.audit.UserDateAudit;
-import com.sopromadze.blogapi.model.category.Category;
-import com.sopromadze.blogapi.model.comment.Comment;
-import com.sopromadze.blogapi.model.tag.Tag;
-import com.sopromadze.blogapi.model.user.User;
-
+@EqualsAndHashCode(callSuper = true)
 @Entity
+@Data
 @Table(name = "posts", uniqueConstraints = { @UniqueConstraint(columnNames = { "title" }) })
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Post extends UserDateAudit {
@@ -60,30 +60,6 @@ public class Post extends UserDateAudit {
 	@JoinTable(name = "post_tag", joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
 	private List<Tag> tags;
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getBody() {
-		return body;
-	}
-
-	public void setBody(String body) {
-		this.body = body;
-	}
-
 	@JsonIgnore
 	public User getUser() {
 		return user;
@@ -103,14 +79,6 @@ public class Post extends UserDateAudit {
 		} else {
 			this.comments = Collections.unmodifiableList(comments);
 		}
-	}
-
-	public Category getCategory() {
-		return category;
-	}
-
-	public void setCategory(Category category) {
-		this.category = category;
 	}
 
 	public List<Tag> getTags() {

@@ -1,29 +1,36 @@
-version: '3'
+version: '3.8'
 services:
-    mysql:
-        image: mysql
-        restart: always
-        environment:
-            MYSQL_DATABASE: 'blogapi'
-            MYSQL_USER: 'root'
-            MYSQL_PASSWORD: 'root'
-            MYSQL_ROOT_PASSWORD: 'root'
-        ports:
-            - '3306' 
-        networks: 
-            - production-network
-    application:
-        build:
-            dockerfile: ./Dockerfile
-            context: .
-        image: michel-eckhardt/spring-boot-blog
-        container_name: spring-boot-blog
-        ports:
-            - "8080:8080"    
-        networks: 
-            - production-network
-        depends_on: 
-            - "mysql"    
-networks: 
-    production-network:
-        driver: bridge
+  db:
+    image: mysql
+    container_name: blogapi-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'blogapi'
+      MYSQL_PASSWORD: 'root'
+      MYSQL_ROOT_PASSWORD: 'root'
+    ports:
+      - '3306:3306'
+    networks:
+      - blogapi-network
+    healthcheck:
+      test: "/usr/bin/mysql --user=root --password=root --execute \"SHOW DATABASES;\""
+      interval: 2s
+      timeout: 20s
+      retries: 10
+    volumes:
+      - ./data:/docker-entrypoint-initdb.d
+  application:
+    container_name: blogapi-application
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - blogapi-network
+    depends_on:
+      - "db"
+networks:
+  blogapi-network:
+    name: blogapi-network
+    driver: bridge

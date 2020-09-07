@@ -1,8 +1,10 @@
-package com.sopromadze.blogapi.model.album;
+package com.sopromadze.blogapi.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sopromadze.blogapi.model.audit.UserDateAudit;
+import com.sopromadze.blogapi.model.user.User;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,13 +19,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sopromadze.blogapi.model.audit.UserDateAudit;
-import com.sopromadze.blogapi.model.photo.Photo;
-import com.sopromadze.blogapi.model.user.User;
-
+@EqualsAndHashCode(callSuper = true)
 @Entity
+@Data
 @Table(name = "albums", uniqueConstraints = { @UniqueConstraint(columnNames = { "title" }) })
 public class Album extends UserDateAudit {
 	private static final long serialVersionUID = 1L;
@@ -43,29 +45,9 @@ public class Album extends UserDateAudit {
 	@OneToMany(mappedBy = "album", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Photo> photo;
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
 	@JsonIgnore
 	public User getUser() {
 		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
 	}
 
 	public List<Photo> getPhoto() {

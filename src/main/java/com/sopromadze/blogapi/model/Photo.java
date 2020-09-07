@@ -1,4 +1,11 @@
-package com.sopromadze.blogapi.model.photo;
+package com.sopromadze.blogapi.model;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sopromadze.blogapi.model.Album;
+import com.sopromadze.blogapi.model.audit.UserDateAudit;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,11 +19,10 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sopromadze.blogapi.model.album.Album;
-import com.sopromadze.blogapi.model.audit.UserDateAudit;
-
+@EqualsAndHashCode(callSuper = true)
 @Entity
+@Data
+@NoArgsConstructor
 @Table(name = "photos", uniqueConstraints = { @UniqueConstraint(columnNames = { "title" }) })
 public class Photo extends UserDateAudit {
 	private static final long serialVersionUID = 1L;
@@ -41,10 +47,6 @@ public class Photo extends UserDateAudit {
 	@JoinColumn(name = "album_id")
 	private Album album;
 
-	public Photo() {
-
-	}
-
 	public Photo(@NotBlank String title, @NotBlank String url, @NotBlank String thumbnailUrl, Album album) {
 		this.title = title;
 		this.url = url;
@@ -52,44 +54,8 @@ public class Photo extends UserDateAudit {
 		this.album = album;
 	}
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
-	public String getThumbnailUrl() {
-		return thumbnailUrl;
-	}
-
-	public void setThumbnailUrl(String thumbnailUrl) {
-		this.thumbnailUrl = thumbnailUrl;
-	}
-
 	@JsonIgnore
 	public Album getAlbum() {
 		return album;
-	}
-
-	public void setAlbum(Album album) {
-		this.album = album;
 	}
 }

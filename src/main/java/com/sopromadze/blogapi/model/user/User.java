@@ -1,8 +1,17 @@
 package com.sopromadze.blogapi.model.user;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sopromadze.blogapi.model.Album;
+import com.sopromadze.blogapi.model.audit.DateAudit;
+import com.sopromadze.blogapi.model.Comment;
+import com.sopromadze.blogapi.model.Post;
+import com.sopromadze.blogapi.model.role.Role;
+import com.sopromadze.blogapi.model.Todo;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -21,19 +30,14 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import org.hibernate.annotations.NaturalId;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sopromadze.blogapi.model.album.Album;
-import com.sopromadze.blogapi.model.audit.DateAudit;
-import com.sopromadze.blogapi.model.comment.Comment;
-import com.sopromadze.blogapi.model.post.Post;
-import com.sopromadze.blogapi.model.role.Role;
-import com.sopromadze.blogapi.model.todo.Todo;
-
+@EqualsAndHashCode(callSuper = true)
 @Entity
+@Data
+@NoArgsConstructor
 @Table(name = "users", uniqueConstraints = { @UniqueConstraint(columnNames = { "username" }),
 		@UniqueConstraint(columnNames = { "email" }) })
 public class User extends DateAudit {
@@ -106,10 +110,6 @@ public class User extends DateAudit {
 	@JoinColumn(name = "company_id")
 	private Company company;
 
-	public User() {
-
-	}
-
 	public User(String firstName, String lastName, String username, String email, String password) {
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -118,69 +118,15 @@ public class User extends DateAudit {
 		this.password = password;
 	}
 
-	public Long getId() {
-		return id;
-	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public Address getAddress() {
-		return address;
-	}
-
-	public void setAddress(Address address) {
-		this.address = address;
-	}
-
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
-	public String getWebsite() {
-		return website;
-	}
-
-	public void setWebsite(String website) {
-		this.website = website;
-	}
-
-	public Company getCompany() {
-		return company;
-	}
-
-	public void setCompany(Company company) {
-		this.company = company;
-	}
 
 	public List<Todo> getTodos() {
-		
+
 		return todos == null ? null : new ArrayList<>(todos);
 	}
 
 	public void setTodos(List<Todo> todos) {
-		
+
 		if (todos == null) {
 			this.todos = null;
 		} else {
@@ -189,12 +135,12 @@ public class User extends DateAudit {
 	}
 
 	public List<Album> getAlbums() {
-		
+
 		return albums == null ? null : new ArrayList<>(albums);
 	}
 
 	public void setAlbums(List<Album> albums) {
-		
+
 		if (albums == null) {
 			this.albums = null;
 		} else {
@@ -202,37 +148,14 @@ public class User extends DateAudit {
 		}
 	}
 
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
 
 	public List<Post> getPosts() {
-		
+
 		return posts == null ? null : new ArrayList<>(posts);
 	}
 
 	public void setPosts(List<Post> posts) {
-		
+
 		if (posts == null) {
 			this.posts = null;
 		} else {
