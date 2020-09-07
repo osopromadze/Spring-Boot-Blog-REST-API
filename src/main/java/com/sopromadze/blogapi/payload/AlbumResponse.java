@@ -5,11 +5,13 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.sopromadze.blogapi.model.Photo;
 import com.sopromadze.blogapi.model.user.User;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @JsonInclude(Include.NON_NULL)
 public class AlbumResponse extends UserDateAuditPayload {

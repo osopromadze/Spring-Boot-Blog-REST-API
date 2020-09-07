@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopromadze.blogapi.model.audit.UserDateAudit;
 import com.sopromadze.blogapi.model.user.User;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +18,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @Table(name = "todos", uniqueConstraints = { @UniqueConstraint(columnNames = { "title" }) })

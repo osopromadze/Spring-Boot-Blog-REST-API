@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.sopromadze.blogapi.model.audit.UserDateAudit;
 import com.sopromadze.blogapi.model.user.User;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @Table(name = "posts", uniqueConstraints = { @UniqueConstraint(columnNames = { "title" }) })
