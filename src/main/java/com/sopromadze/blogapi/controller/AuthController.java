@@ -64,11 +64,11 @@ public class AuthController {
 
 	@PostMapping("/signup")
 	public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
-		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+		if (Boolean.TRUE.equals(userRepository.existsByUsername(signUpRequest.getUsername()))) {
 			throw new BlogapiException(HttpStatus.BAD_REQUEST, "Username is already taken");
 		}
 
-		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+		if (Boolean.TRUE.equals(userRepository.existsByEmail(signUpRequest.getEmail()))) {
 			throw new BlogapiException(HttpStatus.BAD_REQUEST, "Email is already taken");
 		}
 

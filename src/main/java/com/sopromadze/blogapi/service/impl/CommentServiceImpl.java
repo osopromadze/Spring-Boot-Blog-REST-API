@@ -62,8 +62,7 @@ public class CommentServiceImpl implements CommentService {
 	public Comment addComment(CommentRequest commentRequest, Long postId, UserPrincipal currentUser) {
 		Post post = postRepository.findById(postId)
 				.orElseThrow(() -> new ResourceNotFoundException(POST_STR, ID_STR, postId));
-		User user = userRepository.findByUsername(currentUser.getUsername())
-				.orElseThrow(() -> new ResourceNotFoundException("User", "username", currentUser.getUsername()));
+		User user = userRepository.getUser(currentUser);
 		Comment comment = new Comment(commentRequest.getBody());
 		comment.setUser(user);
 		comment.setPost(post);

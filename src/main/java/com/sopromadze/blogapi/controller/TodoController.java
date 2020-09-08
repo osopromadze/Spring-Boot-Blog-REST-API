@@ -72,7 +72,7 @@ public class TodoController {
 	public ResponseEntity<ApiResponse> deleteTodo(@PathVariable(value = "id") Long id, @CurrentUser UserPrincipal currentUser) {
 		ApiResponse apiResponse = todoService.deleteTodo(id, currentUser);
 
-		return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.OK);
+		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 	}
 
 	@PutMapping("/{id}/complete")
