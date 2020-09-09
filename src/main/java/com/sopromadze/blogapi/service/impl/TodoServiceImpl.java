@@ -25,8 +25,6 @@ import java.util.List;
 import static com.sopromadze.blogapi.utils.AppConstants.CREATED_AT;
 import static com.sopromadze.blogapi.utils.AppConstants.ID;
 import static com.sopromadze.blogapi.utils.AppConstants.TODO;
-import static com.sopromadze.blogapi.utils.AppConstants.USER;
-import static com.sopromadze.blogapi.utils.AppConstants.USERNAME;
 import static com.sopromadze.blogapi.utils.AppConstants.YOU_DON_T_HAVE_PERMISSION_TO_MAKE_THIS_OPERATION;
 
 @Service
@@ -42,8 +40,7 @@ public class TodoServiceImpl implements TodoService {
 	public Todo completeTodo(Long id, UserPrincipal currentUser) {
 		Todo todo = todoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(TODO, ID, id));
 
-		User user = userRepository.findByUsername(currentUser.getUsername())
-				.orElseThrow(() -> new ResourceNotFoundException(USER, USERNAME, currentUser.getUsername()));
+		User user = userRepository.getUser(currentUser);
 
 		if (todo.getUser().getId().equals(user.getId())) {
 			todo.setCompleted(Boolean.TRUE);
@@ -58,8 +55,7 @@ public class TodoServiceImpl implements TodoService {
 	@Override
 	public Todo unCompleteTodo(Long id, UserPrincipal currentUser) {
 		Todo todo = todoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(TODO, ID, id));
-		User user = userRepository.findByUsername(currentUser.getUsername())
-				.orElseThrow(() -> new ResourceNotFoundException(USER, USERNAME, currentUser.getUsername()));
+		User user = userRepository.getUser(currentUser);
 		if (todo.getUser().getId().equals(user.getId())) {
 			todo.setCompleted(Boolean.FALSE);
 			return todoRepository.save(todo);
@@ -85,16 +81,14 @@ public class TodoServiceImpl implements TodoService {
 
 	@Override
 	public Todo addTodo(Todo todo, UserPrincipal currentUser) {
-		User user = userRepository.findByUsername(currentUser.getUsername())
-				.orElseThrow(() -> new ResourceNotFoundException(USER, USERNAME, currentUser.getUsername()));
+		User user = userRepository.getUser(currentUser);
 		todo.setUser(user);
 		return todoRepository.save(todo);
 	}
 
 	@Override
 	public Todo getTodo(Long id, UserPrincipal currentUser) {
-		User user = userRepository.findByUsername(currentUser.getUsername())
-				.orElseThrow(() -> new ResourceNotFoundException(USER, USERNAME, currentUser.getUsername()));
+		User user = userRepository.getUser(currentUser);
 		Todo todo = todoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(TODO, ID, id));
 
 		if (todo.getUser().getId().equals(user.getId())) {
@@ -108,8 +102,7 @@ public class TodoServiceImpl implements TodoService {
 
 	@Override
 	public Todo updateTodo(Long id, Todo newTodo, UserPrincipal currentUser) {
-		User user = userRepository.findByUsername(currentUser.getUsername())
-				.orElseThrow(() -> new ResourceNotFoundException(USER, USERNAME, currentUser.getUsername()));
+		User user = userRepository.getUser(currentUser);
 		Todo todo = todoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(TODO, ID, id));
 		if (todo.getUser().getId().equals(user.getId())) {
 			todo.setTitle(newTodo.getTitle());
@@ -124,8 +117,7 @@ public class TodoServiceImpl implements TodoService {
 
 	@Override
 	public ApiResponse deleteTodo(Long id, UserPrincipal currentUser) {
-		User user = userRepository.findByUsername(currentUser.getUsername())
-				.orElseThrow(() -> new ResourceNotFoundException(USER, USERNAME, currentUser.getUsername()));
+		User user = userRepository.getUser(currentUser);
 		Todo todo = todoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(TODO, ID, id));
 
 		if (todo.getUser().getId().equals(user.getId())) {

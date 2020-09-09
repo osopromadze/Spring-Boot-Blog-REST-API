@@ -64,8 +64,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserProfile getUserProfile(String username) {
-		User user = userRepository.findByUsername(username)
-				.orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
+		User user = userRepository.getUserByName(username);
 
 		Long postCount = postRepository.countByCreatedBy(user.getId());
 
@@ -97,8 +96,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User updateUser(User newUser, String username, UserPrincipal currentUser) {
-		User user = userRepository.findByUsername(username)
-				.orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
+		User user = userRepository.getUserByName(username);
 		if (user.getId().equals(currentUser.getId())
 				|| currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
 			user.setFirstName(newUser.getFirstName());
@@ -135,8 +133,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ApiResponse giveAdmin(String username) {
-		User user = userRepository.findByUsername(username)
-				.orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
+		User user = userRepository.getUserByName(username);
 		List<Role> roles = new ArrayList<>();
 		roles.add(roleRepository.findByName(RoleName.ROLE_ADMIN)
 				.orElseThrow(() -> new AppException("User role not set")));
@@ -149,8 +146,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ApiResponse removeAdmin(String username) {
-		User user = userRepository.findByUsername(username)
-				.orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
+		User user = userRepository.getUserByName(username);
 		List<Role> roles = new ArrayList<>();
 		roles.add(
 				roleRepository.findByName(RoleName.ROLE_USER).orElseThrow(() -> new AppException("User role not set")));

@@ -37,10 +37,6 @@ public class AlbumServiceImpl implements AlbumService {
 
 	private static final String ALBUM_STR = "Album";
 
-	private static final String USER_STR = "User";
-
-	private static final String USERNAME_STR = "username";
-
 	private static final String YOU_DON_T_HAVE_PERMISSION_TO_MAKE_THIS_OPERATION = "You don't have permission to make this operation";
 
 	@Autowired
@@ -73,8 +69,7 @@ public class AlbumServiceImpl implements AlbumService {
 
 	@Override
 	public ResponseEntity<Album> addAlbum(AlbumRequest albumRequest, UserPrincipal currentUser) {
-		User user = userRepository.findByUsername(currentUser.getUsername())
-				.orElseThrow(() -> new ResourceNotFoundException(USER_STR, USERNAME_STR, currentUser.getUsername()));
+		User user = userRepository.getUser(currentUser);
 
 		Album album = new Album();
 
@@ -94,8 +89,7 @@ public class AlbumServiceImpl implements AlbumService {
 	@Override
 	public ResponseEntity<AlbumResponse> updateAlbum(Long id, AlbumRequest newAlbum, UserPrincipal currentUser) {
 		Album album = albumRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ALBUM_STR, ID, id));
-		User user = userRepository.findByUsername(currentUser.getUsername())
-				.orElseThrow(() -> new ResourceNotFoundException(USER_STR, USERNAME_STR, currentUser.getUsername()));
+		User user = userRepository.getUser(currentUser);
 		if (album.getUser().getId().equals(user.getId()) || currentUser.getAuthorities()
 				.contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
 			album.setTitle(newAlbum.getTitle());
@@ -114,8 +108,7 @@ public class AlbumServiceImpl implements AlbumService {
 	@Override
 	public ResponseEntity<ApiResponse> deleteAlbum(Long id, UserPrincipal currentUser) {
 		Album album = albumRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ALBUM_STR, ID, id));
-		User user = userRepository.findByUsername(currentUser.getUsername())
-				.orElseThrow(() -> new ResourceNotFoundException(USER_STR, USERNAME_STR, currentUser.getUsername()));
+		User user = userRepository.getUser(currentUser);
 		if (album.getUser().getId().equals(user.getId()) || currentUser.getAuthorities()
 				.contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
 			albumRepository.deleteById(id);
@@ -127,7 +120,8 @@ public class AlbumServiceImpl implements AlbumService {
 
 	@Override
 	public PagedResponse<Album> getUserAlbums(String username, int page, int size) {
-		User user = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException(USER_STR, USERNAME_STR, username));
+		User user = userRepository.getUserByName(username);
+
 		Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
 
 		Page<Album> albums = albumRepository.findByCreatedBy(user.getId(), pageable);

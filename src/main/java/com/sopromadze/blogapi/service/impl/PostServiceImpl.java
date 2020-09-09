@@ -5,8 +5,8 @@ import com.sopromadze.blogapi.exception.ResourceNotFoundException;
 import com.sopromadze.blogapi.exception.UnauthorizedException;
 import com.sopromadze.blogapi.model.Category;
 import com.sopromadze.blogapi.model.Post;
-import com.sopromadze.blogapi.model.role.RoleName;
 import com.sopromadze.blogapi.model.Tag;
+import com.sopromadze.blogapi.model.role.RoleName;
 import com.sopromadze.blogapi.model.user.User;
 import com.sopromadze.blogapi.payload.ApiResponse;
 import com.sopromadze.blogapi.payload.PagedResponse;
@@ -29,7 +29,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,7 +38,6 @@ import static com.sopromadze.blogapi.utils.AppConstants.ID;
 import static com.sopromadze.blogapi.utils.AppConstants.POST;
 import static com.sopromadze.blogapi.utils.AppConstants.TAG;
 import static com.sopromadze.blogapi.utils.AppConstants.USER;
-import static com.sopromadze.blogapi.utils.AppConstants.USERNAME;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -72,8 +70,7 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public PagedResponse<Post> getPostsByCreatedBy(String username, int page, int size) {
 		validatePageNumberAndSize(page, size);
-		User user = userRepository.findByUsername(username)
-				.orElseThrow(() -> new ResourceNotFoundException(USER, USERNAME, username));
+		User user = userRepository.getUserByName(username);
 		Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
 		Page<Post> posts = postRepository.findByCreatedBy(user.getId(), pageable);
 
@@ -106,7 +103,7 @@ public class PostServiceImpl implements PostService {
 
 		Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
 
-		Page<Post> posts = postRepository.findByTags(Arrays.asList(tag), pageable);
+		Page<Post> posts = postRepository.findByTags(Collections.singletonList(tag), pageable);
 
 		List<Post> content = posts.getNumberOfElements() == 0 ? Collections.emptyList() : posts.getContent();
 
@@ -152,7 +149,7 @@ public class PostServiceImpl implements PostService {
 		Category category = categoryRepository.findById(postRequest.getCategoryId())
 				.orElseThrow(() -> new ResourceNotFoundException(CATEGORY, ID, postRequest.getCategoryId()));
 
-		List<Tag> tags = new ArrayList< >(postRequest.getTags().size());
+		List<Tag> tags = new ArrayList<>(postRequest.getTags().size());
 
 		for (String name : postRequest.getTags()) {
 			Tag tag = tagRepository.findByName(name);
@@ -176,7 +173,7 @@ public class PostServiceImpl implements PostService {
 		postResponse.setBody(newPost.getBody());
 		postResponse.setCategory(newPost.getCategory().getName());
 
-		List<String> tagNames = new ArrayList< >(newPost.getTags().size());
+		List<String> tagNames = new ArrayList<>(newPost.getTags().size());
 
 		for (Tag tag : newPost.getTags()) {
 			tagNames.add(tag.getName());
