@@ -41,6 +41,7 @@ public class AlbumController {
 
 	@ExceptionHandler(ResponseEntityErrorException.class)
 	public ResponseEntity<ApiResponse> handleExceptions(ResponseEntityErrorException exception) {
+		//comment abc now I want to navigate to project view
 		return exception.getApiResponse();
 	}
 

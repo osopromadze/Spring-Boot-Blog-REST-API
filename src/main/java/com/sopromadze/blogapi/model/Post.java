@@ -48,9 +48,9 @@ public class Post extends UserDateAudit {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	/*@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "category_id")
-	private Category category;
+	private Category category;*/
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)

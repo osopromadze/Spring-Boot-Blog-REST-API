@@ -13,8 +13,6 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Long> {
 	Page<Post> findByCreatedBy(Long userId, Pageable pageable);
 
-	Page<Post> findByCategory(Long categoryId, Pageable pageable);
-
 	Page<Post> findByTags(List<Tag> tags, Pageable pageable);
 
 	Long countByCreatedBy(Long userId);

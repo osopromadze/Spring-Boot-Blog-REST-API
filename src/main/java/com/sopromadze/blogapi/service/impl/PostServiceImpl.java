@@ -3,7 +3,6 @@ package com.sopromadze.blogapi.service.impl;
 import com.sopromadze.blogapi.exception.BadRequestException;
 import com.sopromadze.blogapi.exception.ResourceNotFoundException;
 import com.sopromadze.blogapi.exception.UnauthorizedException;
-import com.sopromadze.blogapi.model.Category;
 import com.sopromadze.blogapi.model.Post;
 import com.sopromadze.blogapi.model.Tag;
 import com.sopromadze.blogapi.model.role.RoleName;
@@ -12,7 +11,6 @@ import com.sopromadze.blogapi.payload.ApiResponse;
 import com.sopromadze.blogapi.payload.PagedResponse;
 import com.sopromadze.blogapi.payload.PostRequest;
 import com.sopromadze.blogapi.payload.PostResponse;
-import com.sopromadze.blogapi.repository.CategoryRepository;
 import com.sopromadze.blogapi.repository.PostRepository;
 import com.sopromadze.blogapi.repository.TagRepository;
 import com.sopromadze.blogapi.repository.UserRepository;
@@ -48,9 +46,6 @@ public class PostServiceImpl implements PostService {
 	private UserRepository userRepository;
 
 	@Autowired
-	private CategoryRepository categoryRepository;
-
-	@Autowired
 	private TagRepository tagRepository;
 
 	@Override
@@ -81,21 +76,6 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public PagedResponse<Post> getPostsByCategory(Long id, int page, int size) {
-		AppUtils.validatePageNumberAndSize(page, size);
-		Category category = categoryRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(CATEGORY, ID, id));
-
-		Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
-		Page<Post> posts = postRepository.findByCategory(category.getId(), pageable);
-
-		List<Post> content = posts.getNumberOfElements() == 0 ? Collections.emptyList() : posts.getContent();
-
-		return new PagedResponse<>(content, posts.getNumber(), posts.getSize(), posts.getTotalElements(),
-				posts.getTotalPages(), posts.isLast());
-	}
-
-	@Override
 	public PagedResponse<Post> getPostsByTag(Long id, int page, int size) {
 		AppUtils.validatePageNumberAndSize(page, size);
 
@@ -114,13 +94,11 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public Post updatePost(Long id, PostRequest newPostRequest, UserPrincipal currentUser) {
 		Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(POST, ID, id));
-		Category category = categoryRepository.findById(newPostRequest.getCategoryId())
-				.orElseThrow(() -> new ResourceNotFoundException(CATEGORY, ID, newPostRequest.getCategoryId()));
 		if (post.getUser().getId().equals(currentUser.getId())
 				|| currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
 			post.setTitle(newPostRequest.getTitle());
 			post.setBody(newPostRequest.getBody());
-			post.setCategory(category);
+			//post.setCategory(category);
 			return postRepository.save(post);
 		}
 		ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to edit this post");
@@ -146,9 +124,6 @@ public class PostServiceImpl implements PostService {
 	public PostResponse addPost(PostRequest postRequest, UserPrincipal currentUser) {
 		User user = userRepository.findById(currentUser.getId())
 				.orElseThrow(() -> new ResourceNotFoundException(USER, ID, 1L));
-		Category category = categoryRepository.findById(postRequest.getCategoryId())
-				.orElseThrow(() -> new ResourceNotFoundException(CATEGORY, ID, postRequest.getCategoryId()));
-
 		List<Tag> tags = new ArrayList<>(postRequest.getTags().size());
 
 		for (String name : postRequest.getTags()) {
@@ -161,7 +136,7 @@ public class PostServiceImpl implements PostService {
 		Post post = new Post();
 		post.setBody(postRequest.getBody());
 		post.setTitle(postRequest.getTitle());
-		post.setCategory(category);
+		//post.setCategory(category);
 		post.setUser(user);
 		post.setTags(tags);
 
@@ -171,7 +146,7 @@ public class PostServiceImpl implements PostService {
 
 		postResponse.setTitle(newPost.getTitle());
 		postResponse.setBody(newPost.getBody());
-		postResponse.setCategory(newPost.getCategory().getName());
+		//postResponse.setCategory(newPost.getCategory().getName());
 
 		List<String> tagNames = new ArrayList<>(newPost.getTags().size());
 
