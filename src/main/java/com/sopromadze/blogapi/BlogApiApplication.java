@@ -15,7 +15,6 @@ import java.util.TimeZone;
 @EntityScan(basePackageClasses = { BlogApiApplication.class, Jsr310Converters.class })
 
 public class BlogApiApplication {
-	//new comment
 	public static void main(String[] args) {
 		SpringApplication.run(BlogApiApplication.class, args);
 	}
