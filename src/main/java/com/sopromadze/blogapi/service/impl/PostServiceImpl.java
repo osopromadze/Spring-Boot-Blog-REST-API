@@ -41,7 +41,7 @@ import static com.sopromadze.blogapi.utils.AppConstants.USER;
 public class PostServiceImpl implements PostService {
 	@Autowired
 	private PostRepository postRepository;
-
+// this is new line
 	@Autowired
 	private UserRepository userRepository;
 
