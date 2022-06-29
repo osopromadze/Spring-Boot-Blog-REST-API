@@ -35,7 +35,7 @@ import java.util.List;
 @RequestMapping("/api/auth")
 public class AuthController {
 	private static final String USER_ROLE_NOT_SET = "User role not set";
-//Rajat chauriya
+// Narsi sirs
 	@Autowired
 	private AuthenticationManager authenticationManager;
 
