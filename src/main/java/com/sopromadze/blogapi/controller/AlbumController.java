@@ -43,7 +43,6 @@ public class AlbumController {
 
 	@ExceptionHandler(ResponseEntityErrorException.class)
 	public ResponseEntity<ApiResponse> handleExceptions(ResponseEntityErrorException exception) {
-		//add conflix change
 		return exception.getApiResponse();
 	}
 
