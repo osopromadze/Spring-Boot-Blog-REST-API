@@ -33,6 +33,8 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/albums")
 public class AlbumController {
+
+	// by Rajat
 	@Autowired
 	private AlbumService albumService;
 
