@@ -1,9 +1,9 @@
 package com.sopromadze.blogapi.service;
 
 import com.sopromadze.blogapi.exception.UnauthorizedException;
-import com.sopromadze.blogapi.model.Category;
-import com.sopromadze.blogapi.payload.ApiResponse;
-import com.sopromadze.blogapi.payload.PagedResponse;
+import com.sopromadze.blogapi.model.post.Category;
+import com.sopromadze.blogapi.payload.response.ApiResponse;
+import com.sopromadze.blogapi.payload.response.PagedResponse;
 import com.sopromadze.blogapi.security.UserPrincipal;
 import org.springframework.http.ResponseEntity;
 

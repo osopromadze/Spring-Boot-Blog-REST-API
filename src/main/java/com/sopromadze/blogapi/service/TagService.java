@@ -1,8 +1,8 @@
 package com.sopromadze.blogapi.service;
 
-import com.sopromadze.blogapi.model.Tag;
-import com.sopromadze.blogapi.payload.ApiResponse;
-import com.sopromadze.blogapi.payload.PagedResponse;
+import com.sopromadze.blogapi.model.post.Tag;
+import com.sopromadze.blogapi.payload.response.ApiResponse;
+import com.sopromadze.blogapi.payload.response.PagedResponse;
 import com.sopromadze.blogapi.security.UserPrincipal;
 
 public interface TagService {

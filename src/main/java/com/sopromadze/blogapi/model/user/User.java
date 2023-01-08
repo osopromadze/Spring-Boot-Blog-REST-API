@@ -2,12 +2,12 @@ package com.sopromadze.blogapi.model.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sopromadze.blogapi.model.Album;
+import com.sopromadze.blogapi.model.photo.Album;
 import com.sopromadze.blogapi.model.audit.DateAudit;
-import com.sopromadze.blogapi.model.Comment;
-import com.sopromadze.blogapi.model.Post;
+import com.sopromadze.blogapi.model.post.Comment;
+import com.sopromadze.blogapi.model.post.Post;
 import com.sopromadze.blogapi.model.role.Role;
-import com.sopromadze.blogapi.model.Todo;
+import com.sopromadze.blogapi.model.todo.Todo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

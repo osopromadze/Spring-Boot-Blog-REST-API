@@ -1,4 +1,4 @@
-package com.sopromadze.blogapi.payload;
+package com.sopromadze.blogapi.payload.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

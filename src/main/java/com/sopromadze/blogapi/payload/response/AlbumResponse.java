@@ -1,9 +1,10 @@
-package com.sopromadze.blogapi.payload;
+package com.sopromadze.blogapi.payload.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.sopromadze.blogapi.model.Photo;
+import com.sopromadze.blogapi.model.photo.Photo;
 import com.sopromadze.blogapi.model.user.User;
+import com.sopromadze.blogapi.payload.UserDateAuditPayload;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

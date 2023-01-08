@@ -1,4 +1,4 @@
-package com.sopromadze.blogapi.model;
+package com.sopromadze.blogapi.model.post;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;

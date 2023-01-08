@@ -1,11 +1,11 @@
 package com.sopromadze.blogapi.controller;
 
 import com.sopromadze.blogapi.exception.ResponseEntityErrorException;
-import com.sopromadze.blogapi.model.Album;
-import com.sopromadze.blogapi.payload.AlbumResponse;
-import com.sopromadze.blogapi.payload.ApiResponse;
-import com.sopromadze.blogapi.payload.PagedResponse;
-import com.sopromadze.blogapi.payload.PhotoResponse;
+import com.sopromadze.blogapi.model.photo.Album;
+import com.sopromadze.blogapi.payload.response.AlbumResponse;
+import com.sopromadze.blogapi.payload.response.ApiResponse;
+import com.sopromadze.blogapi.payload.response.PagedResponse;
+import com.sopromadze.blogapi.payload.response.PhotoResponse;
 import com.sopromadze.blogapi.payload.request.AlbumRequest;
 import com.sopromadze.blogapi.security.CurrentUser;
 import com.sopromadze.blogapi.security.UserPrincipal;

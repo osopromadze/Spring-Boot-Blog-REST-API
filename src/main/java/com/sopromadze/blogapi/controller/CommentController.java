@@ -1,9 +1,9 @@
 package com.sopromadze.blogapi.controller;
 
-import com.sopromadze.blogapi.model.Comment;
-import com.sopromadze.blogapi.payload.ApiResponse;
-import com.sopromadze.blogapi.payload.CommentRequest;
-import com.sopromadze.blogapi.payload.PagedResponse;
+import com.sopromadze.blogapi.model.post.Comment;
+import com.sopromadze.blogapi.payload.response.ApiResponse;
+import com.sopromadze.blogapi.payload.request.CommentRequest;
+import com.sopromadze.blogapi.payload.response.PagedResponse;
 import com.sopromadze.blogapi.security.CurrentUser;
 import com.sopromadze.blogapi.security.UserPrincipal;
 import com.sopromadze.blogapi.service.CommentService;

@@ -3,7 +3,7 @@ package com.sopromadze.blogapi.config;
 import com.sopromadze.blogapi.repository.UserRepository;
 import com.sopromadze.blogapi.security.JwtAuthenticationEntryPoint;
 import com.sopromadze.blogapi.security.JwtAuthenticationFilter;
-import com.sopromadze.blogapi.service.impl.CustomUserDetailsServiceImpl;
+import com.sopromadze.blogapi.security.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,12 +27,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 		jsr250Enabled = true,
 		prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-	private final CustomUserDetailsServiceImpl customUserDetailsService;
+	private final UserDetailsServiceImpl customUserDetailsService;
 	private final JwtAuthenticationEntryPoint unauthorizedHandler;
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
 	@Autowired
-	public SecurityConfig(UserRepository userRepository, CustomUserDetailsServiceImpl customUserDetailsService,
+	public SecurityConfig(UserRepository userRepository, UserDetailsServiceImpl customUserDetailsService,
 						  JwtAuthenticationEntryPoint unauthorizedHandler, JwtAuthenticationFilter jwtAuthenticationFilter) {
 		this.customUserDetailsService = customUserDetailsService;
 		this.unauthorizedHandler = unauthorizedHandler;

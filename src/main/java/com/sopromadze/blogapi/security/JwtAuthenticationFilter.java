@@ -1,6 +1,6 @@
 package com.sopromadze.blogapi.security;
 
-import com.sopromadze.blogapi.service.CustomUserDetailsService;
+import com.sopromadze.blogapi.security.service.UserDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	@Autowired
 	private JwtTokenProvider tokenProvider;
 	@Autowired
-	private CustomUserDetailsService customUserDetailsService;
+	private UserDetailsService userDetailsService;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -33,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
 				Long userId = tokenProvider.getUserIdFromJWT(jwt);
 
-				UserDetails userDetails = customUserDetailsService.loadUserById(userId);
+				UserDetails userDetails = userDetailsService.loadUserById(userId);
 				UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null,
 						userDetails.getAuthorities());
 				authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

@@ -1,11 +1,11 @@
 package com.sopromadze.blogapi.service;
 
 import com.sopromadze.blogapi.model.user.User;
-import com.sopromadze.blogapi.payload.ApiResponse;
-import com.sopromadze.blogapi.payload.InfoRequest;
-import com.sopromadze.blogapi.payload.UserIdentityAvailability;
-import com.sopromadze.blogapi.payload.UserProfile;
-import com.sopromadze.blogapi.payload.UserSummary;
+import com.sopromadze.blogapi.payload.response.ApiResponse;
+import com.sopromadze.blogapi.payload.request.InfoRequest;
+import com.sopromadze.blogapi.payload.response.UserIdentityAvailability;
+import com.sopromadze.blogapi.payload.response.UserProfile;
+import com.sopromadze.blogapi.payload.response.UserSummary;
 import com.sopromadze.blogapi.security.UserPrincipal;
 
 public interface UserService {

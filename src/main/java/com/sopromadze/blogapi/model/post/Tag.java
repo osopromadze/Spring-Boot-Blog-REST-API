@@ -1,8 +1,8 @@
-package com.sopromadze.blogapi.model;
+package com.sopromadze.blogapi.model.post;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopromadze.blogapi.model.audit.UserDateAudit;
-import com.sopromadze.blogapi.model.Post;
+import com.sopromadze.blogapi.model.post.Post;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

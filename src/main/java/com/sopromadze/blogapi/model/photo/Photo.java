@@ -1,4 +1,4 @@
-package com.sopromadze.blogapi.model;
+package com.sopromadze.blogapi.model.photo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopromadze.blogapi.model.audit.UserDateAudit;

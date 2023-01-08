@@ -1,6 +1,6 @@
 package com.sopromadze.blogapi.repository;
 
-import com.sopromadze.blogapi.model.Comment;
+import com.sopromadze.blogapi.model.post.Comment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

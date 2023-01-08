@@ -2,10 +2,10 @@ package com.sopromadze.blogapi.service.impl;
 
 import com.sopromadze.blogapi.exception.ResourceNotFoundException;
 import com.sopromadze.blogapi.exception.UnauthorizedException;
-import com.sopromadze.blogapi.model.Category;
+import com.sopromadze.blogapi.model.post.Category;
 import com.sopromadze.blogapi.model.role.RoleName;
-import com.sopromadze.blogapi.payload.ApiResponse;
-import com.sopromadze.blogapi.payload.PagedResponse;
+import com.sopromadze.blogapi.payload.response.ApiResponse;
+import com.sopromadze.blogapi.payload.response.PagedResponse;
 import com.sopromadze.blogapi.repository.CategoryRepository;
 import com.sopromadze.blogapi.security.UserPrincipal;
 import com.sopromadze.blogapi.service.CategoryService;

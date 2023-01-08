@@ -1,6 +1,6 @@
 package com.sopromadze.blogapi.payload.request;
 
-import com.sopromadze.blogapi.model.Photo;
+import com.sopromadze.blogapi.model.photo.Photo;
 import com.sopromadze.blogapi.model.user.User;
 import com.sopromadze.blogapi.payload.UserDateAuditPayload;
 import lombok.Data;

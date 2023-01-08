@@ -1,9 +1,9 @@
 package com.sopromadze.blogapi.controller;
 
-import com.sopromadze.blogapi.payload.ApiResponse;
-import com.sopromadze.blogapi.payload.PagedResponse;
-import com.sopromadze.blogapi.payload.PhotoRequest;
-import com.sopromadze.blogapi.payload.PhotoResponse;
+import com.sopromadze.blogapi.payload.response.ApiResponse;
+import com.sopromadze.blogapi.payload.response.PagedResponse;
+import com.sopromadze.blogapi.payload.request.PhotoRequest;
+import com.sopromadze.blogapi.payload.response.PhotoResponse;
 import com.sopromadze.blogapi.security.CurrentUser;
 import com.sopromadze.blogapi.security.UserPrincipal;
 import com.sopromadze.blogapi.service.PhotoService;

@@ -1,6 +1,6 @@
 package com.sopromadze.blogapi.repository;
 
-import com.sopromadze.blogapi.model.Todo;
+import com.sopromadze.blogapi.model.todo.Todo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
