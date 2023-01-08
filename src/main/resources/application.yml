@@ -20,4 +20,4 @@ app:
   jwtExpirationInMs: 3600000
 
 cors:
-  allowedOrings: '*'
+  allowedOrigins: '*'
