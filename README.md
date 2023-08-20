@@ -1,5 +1,5 @@
 [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=blogapi)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=blogapi&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=blogapi)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=osopromadze_Spring-Boot-Blog-REST-API&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=osopromadze_Spring-Boot-Blog-REST-API)
 
 # Spring Boot, MySQL, Spring Security, JWT, JPA, Rest API
 
