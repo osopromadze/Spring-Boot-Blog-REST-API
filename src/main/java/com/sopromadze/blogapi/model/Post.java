@@ -3,6 +3,7 @@ package com.sopromadze.blogapi.model;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.sopromadze.blogapi.infrastructure.persistence.mysql.entity.TagEntity;
 import com.sopromadze.blogapi.model.audit.UserDateAudit;
 import com.sopromadze.blogapi.model.user.User;
 import jakarta.persistence.*;
@@ -45,7 +46,7 @@ public class Post extends UserDateAudit {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "post_tag", joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
-    private List<Tag> tags;
+    private List<TagEntity> tags;
 
     @JsonIgnore
     public User getUser() {
@@ -68,11 +69,11 @@ public class Post extends UserDateAudit {
         }
     }
 
-    public List<Tag> getTags() {
+    public List<TagEntity> getTags() {
         return tags == null ? null : new ArrayList<>(tags);
     }
 
-    public void setTags(List<Tag> tags) {
+    public void setTags(List<TagEntity> tags) {
         if (tags == null) {
             this.tags = null;
         } else {
