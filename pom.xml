@@ -25,7 +25,6 @@
         <java.version>17</java.version>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
         <org.projectlombok.version>1.18.28</org.projectlombok.version>
-        <sonar.projectKey>blogapi</sonar.projectKey>
         <sonar.organization>coma123</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
