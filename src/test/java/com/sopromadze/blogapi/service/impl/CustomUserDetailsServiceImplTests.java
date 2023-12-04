@@ -1,7 +1,6 @@
 package com.sopromadze.blogapi.service.impl;
 
 import com.sopromadze.blogapi.repository.UserRepository;
-import com.sopromadze.blogapi.security.UserPrincipal;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -17,9 +16,6 @@ public class CustomUserDetailsServiceImplTests {
 
     @Mock
     private UserRepository userRepository;
-
-    @Mock
-    UserPrincipal userPrincipal;
 
     @InjectMocks
     CustomUserDetailsServiceImpl customUserDetailsService;
