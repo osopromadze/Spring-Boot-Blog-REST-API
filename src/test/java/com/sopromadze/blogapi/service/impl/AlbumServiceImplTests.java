@@ -42,10 +42,10 @@ public class AlbumServiceImplTests {
     private ModelMapper modelMapper;
 
     @Mock
-    Pageable pageable;
+    private Pageable pageable;
 
     @InjectMocks
-    AlbumServiceImpl albumService;
+    private AlbumServiceImpl albumService;
 
     @Test
     public void getAllAlbums_whenNoElementsReturned_thenEmptyListInResponse() {
