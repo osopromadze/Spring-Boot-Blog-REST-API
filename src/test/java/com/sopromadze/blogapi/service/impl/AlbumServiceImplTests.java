@@ -3,7 +3,6 @@ package com.sopromadze.blogapi.service.impl;
 import com.sopromadze.blogapi.exception.BlogapiException;
 import com.sopromadze.blogapi.exception.ResourceNotFoundException;
 import com.sopromadze.blogapi.model.Album;
-import com.sopromadze.blogapi.model.Photo;
 import com.sopromadze.blogapi.model.user.User;
 import com.sopromadze.blogapi.payload.AlbumResponse;
 import com.sopromadze.blogapi.payload.PagedResponse;

@@ -21,7 +21,7 @@ public class CustomUserDetailsServiceImplTests {
     CustomUserDetailsServiceImpl customUserDetailsService;
 
     @Test(expected = UsernameNotFoundException.class)
-    public void loadUserByUsername_whenUserNotFound_theThrowException() {
+    public void loadUserByUsername_whenUserNotFound_thenThrowException() {
         Mockito.when(userRepository.findByUsernameOrEmail(Mockito.anyString(), Mockito.anyString()))
                 .thenReturn(Optional.empty());
 
