@@ -89,9 +89,11 @@ public class CategoryServiceImplTests {
     @Test(expected = ResourceNotFoundException.class)
     public void updateCategory_whenNoResourceFound_thenThrowException() {
         Collection<? extends GrantedAuthority> authorities = new ArrayList<>();
-        Mockito.when(categoryRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
         UserPrincipal fakeUserPrincipal = new UserPrincipal(1L, "John", "Doe", "john.doe",
                 "john.doe@example.com", "password123", authorities);
+
+        Mockito.when(categoryRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+
         categoryService.updateCategory(1L, new Category(), fakeUserPrincipal);
     }
 
