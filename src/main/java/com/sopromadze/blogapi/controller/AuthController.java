@@ -39,10 +39,10 @@ public class AuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @Autowired
+//    @Autowired
     private UserRepository userRepository;
 
-    @Autowired
+//    @Autowired
     private RoleRepository roleRepository;
 
     @Autowired

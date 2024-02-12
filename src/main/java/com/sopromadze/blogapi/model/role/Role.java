@@ -2,13 +2,12 @@ package com.sopromadze.blogapi.model.role;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.NaturalId;
 
-@Entity
+//@Entity
 @Data
-@NoArgsConstructor
-@Table(name = "roles")
+//@NoArgsConstructor
+//@Table(name = "roles")
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

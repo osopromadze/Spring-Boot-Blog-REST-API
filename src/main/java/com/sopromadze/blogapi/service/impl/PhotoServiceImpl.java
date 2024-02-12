@@ -15,7 +15,6 @@ import com.sopromadze.blogapi.security.UserPrincipal;
 import com.sopromadze.blogapi.service.PhotoService;
 import com.sopromadze.blogapi.utils.AppConstants;
 import com.sopromadze.blogapi.utils.AppUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,18 +26,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.sopromadze.blogapi.utils.AppConstants.ALBUM;
-import static com.sopromadze.blogapi.utils.AppConstants.CREATED_AT;
-import static com.sopromadze.blogapi.utils.AppConstants.ID;
-import static com.sopromadze.blogapi.utils.AppConstants.PHOTO;
+import static com.sopromadze.blogapi.utils.AppConstants.*;
 
 @Service
 public class PhotoServiceImpl implements PhotoService {
 
-	@Autowired
+//	@Autowired
 	private PhotoRepository photoRepository;
 
-	@Autowired
+//	@Autowired
 	private AlbumRepository albumRepository;
 
 	@Override

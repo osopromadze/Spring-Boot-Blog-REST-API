@@ -39,10 +39,10 @@ public class AlbumServiceImpl implements AlbumService {
 
 	private static final String YOU_DON_T_HAVE_PERMISSION_TO_MAKE_THIS_OPERATION = "You don't have permission to make this operation";
 
-	@Autowired
+//	@Autowired
 	private AlbumRepository albumRepository;
 
-	@Autowired
+//	@Autowired
 	private UserRepository userRepository;
 
 	@Autowired

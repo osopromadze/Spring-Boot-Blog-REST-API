@@ -10,7 +10,6 @@ import com.sopromadze.blogapi.repository.CategoryRepository;
 import com.sopromadze.blogapi.security.UserPrincipal;
 import com.sopromadze.blogapi.service.CategoryService;
 import com.sopromadze.blogapi.utils.AppUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +25,7 @@ import java.util.List;
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
-	@Autowired
+//	@Autowired
 	private CategoryRepository categoryRepository;
 
 	@Override

@@ -1,21 +1,13 @@
 package com.sopromadze.blogapi.service.impl;
 
-import com.sopromadze.blogapi.exception.AccessDeniedException;
-import com.sopromadze.blogapi.exception.AppException;
-import com.sopromadze.blogapi.exception.BadRequestException;
-import com.sopromadze.blogapi.exception.ResourceNotFoundException;
-import com.sopromadze.blogapi.exception.UnauthorizedException;
+import com.sopromadze.blogapi.exception.*;
 import com.sopromadze.blogapi.model.role.Role;
 import com.sopromadze.blogapi.model.role.RoleName;
 import com.sopromadze.blogapi.model.user.Address;
 import com.sopromadze.blogapi.model.user.Company;
 import com.sopromadze.blogapi.model.user.Geo;
 import com.sopromadze.blogapi.model.user.User;
-import com.sopromadze.blogapi.payload.ApiResponse;
-import com.sopromadze.blogapi.payload.InfoRequest;
-import com.sopromadze.blogapi.payload.UserIdentityAvailability;
-import com.sopromadze.blogapi.payload.UserProfile;
-import com.sopromadze.blogapi.payload.UserSummary;
+import com.sopromadze.blogapi.payload.*;
 import com.sopromadze.blogapi.repository.PostRepository;
 import com.sopromadze.blogapi.repository.RoleRepository;
 import com.sopromadze.blogapi.repository.UserRepository;
@@ -32,13 +24,13 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
-	@Autowired
+//	@Autowired
 	private UserRepository userRepository;
 
-	@Autowired
+//	@Autowired
 	private PostRepository postRepository;
 
-	@Autowired
+//	@Autowired
 	private RoleRepository roleRepository;
 
 	@Autowired

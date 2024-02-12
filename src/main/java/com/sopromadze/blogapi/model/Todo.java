@@ -6,12 +6,11 @@ import com.sopromadze.blogapi.model.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(callSuper = true)
-@Entity
+//@EqualsAndHashCode(callSuper = true)
+//@Entity
 @Data
-@Table(name = "todos", uniqueConstraints = {@UniqueConstraint(columnNames = {"title"})})
+//@Table(name = "todos", uniqueConstraints = {@UniqueConstraint(columnNames = {"title"})})
 public class Todo extends UserDateAudit {
 
     private static final long serialVersionUID = 1L;

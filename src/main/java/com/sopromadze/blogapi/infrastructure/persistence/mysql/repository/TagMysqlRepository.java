@@ -1,10 +1,21 @@
 package com.sopromadze.blogapi.infrastructure.persistence.mysql.repository;
 
 import com.sopromadze.blogapi.infrastructure.persistence.mysql.entity.TagEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-@Repository
-public interface TagMysqlRepository extends JpaRepository<TagEntity, Long> {
+import java.util.Optional;
+
+//@Repository
+public interface TagMysqlRepository {
     TagEntity findByName(String name);
+
+    TagEntity save(TagEntity entity);
+
+    Page<TagEntity> findAll(Pageable pageable);
+
+    Optional<TagEntity> findById(Long id);
+
+    void deleteById(Long id);
+
 }

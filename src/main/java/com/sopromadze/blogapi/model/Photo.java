@@ -5,14 +5,12 @@ import com.sopromadze.blogapi.model.audit.UserDateAudit;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
-@EqualsAndHashCode(callSuper = true)
-@Entity
+//@EqualsAndHashCode(callSuper = true)
+//@Entity
 @Data
-@NoArgsConstructor
-@Table(name = "photos", uniqueConstraints = {@UniqueConstraint(columnNames = {"title"})})
+//@NoArgsConstructor
+//@Table(name = "photos", uniqueConstraints = {@UniqueConstraint(columnNames = {"title"})})
 public class Photo extends UserDateAudit {
     private static final long serialVersionUID = 1L;
 

@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 import java.time.Instant;
 
 @EqualsAndHashCode(callSuper = true)
-@Entity
+//@Entity
 @Data
 @NoArgsConstructor
-@Table(name = "company")
+//@Table(name = "company")
 public class Company extends UserDateAudit {
     private static final long serialVersionUID = 1L;
 

@@ -1,23 +1,19 @@
 package com.sopromadze.blogapi.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.sopromadze.blogapi.model.audit.UserDateAudit;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
-@Entity
+//@EqualsAndHashCode(callSuper = true)
+//@Entity
 @Data
-@NoArgsConstructor
-@Table(name = "categories")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+//@NoArgsConstructor
+//@Table(name = "categories")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Category extends UserDateAudit {
     private static final long serialVersionUID = 1L;
 

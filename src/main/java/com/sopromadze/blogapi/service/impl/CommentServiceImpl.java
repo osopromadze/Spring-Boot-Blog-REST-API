@@ -15,7 +15,6 @@ import com.sopromadze.blogapi.repository.UserRepository;
 import com.sopromadze.blogapi.security.UserPrincipal;
 import com.sopromadze.blogapi.service.CommentService;
 import com.sopromadze.blogapi.utils.AppUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -38,13 +37,13 @@ public class CommentServiceImpl implements CommentService {
 
 	private static final String COMMENT_DOES_NOT_BELONG_TO_POST = "Comment does not belong to post";
 
-	@Autowired
+//	@Autowired
 	private CommentRepository commentRepository;
 
-	@Autowired
+//	@Autowired
 	private PostRepository postRepository;
 
-	@Autowired
+//	@Autowired
 	private UserRepository userRepository;
 
 	@Override

@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://blogapi-db:3306/blogapi?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:postgresql://localhost:5432/blogapi?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: root
     password: root
   jpa:
@@ -9,7 +9,7 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL5Dialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
@@ -20,4 +20,4 @@ app:
   jwtExpirationInMs: 3600000
 
 cors:
-  allowedOrings: '*'
+  allowed_origins: '*'

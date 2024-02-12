@@ -4,13 +4,11 @@ import com.sopromadze.blogapi.exception.ResourceNotFoundException;
 import com.sopromadze.blogapi.model.user.User;
 import com.sopromadze.blogapi.security.UserPrincipal;
 import jakarta.validation.constraints.NotBlank;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+//@Repository
+public interface UserRepository  {
     Optional<User> findByUsername(@NotBlank String username);
 
     Optional<User> findByEmail(@NotBlank String email);
@@ -29,4 +27,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
         return findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
     }
+
+    int count();
+
+    User save(User user);
+
+    Optional<User> findById(Long id);
+
+    void deleteById(Long id);
+
 }

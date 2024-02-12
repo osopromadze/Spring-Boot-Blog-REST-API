@@ -5,15 +5,14 @@ import com.sopromadze.blogapi.domain.port.TagPersistencePort;
 import com.sopromadze.blogapi.infrastructure.persistence.mysql.entity.TagEntity;
 import com.sopromadze.blogapi.infrastructure.persistence.mysql.mapper.TagEntityMapper;
 import com.sopromadze.blogapi.infrastructure.persistence.mysql.repository.TagMysqlRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @Service
 public class TagPersistenceMysqlAdapter implements TagPersistencePort {
 
-    private final TagMysqlRepository tagMysqlRepository;
-    private final TagEntityMapper tagEntityMapper;
+    private TagMysqlRepository tagMysqlRepository;
+    private TagEntityMapper tagEntityMapper;
 
     @Override
     public Tag createTag(Tag tag) {

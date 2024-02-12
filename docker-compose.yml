@@ -1,35 +1,18 @@
 version: '3.8'
 services:
-  db:
-    image: mysql
-    container_name: blogapi-db
-    restart: always
-    environment:
-      MYSQL_DATABASE: 'blogapi'
-      MYSQL_PASSWORD: 'root'
-      MYSQL_ROOT_PASSWORD: 'root'
+  postgres:
+    image: postgres:14-alpine
+    container_name: blogapi-postgres
     ports:
-      - '3306:3306'
-    networks:
-      - blogapi-network
-    healthcheck:
-      test: "/usr/bin/mysql --user=root --password=root --execute \"SHOW DATABASES;\""
-      interval: 2s
-      timeout: 20s
-      retries: 10
+      - "5432:5432"
     volumes:
-      - ./data:/docker-entrypoint-initdb.d
-  application:
-    container_name: blogapi-application
-    build:
-      context: ./
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
+      - ~/apps/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=root
+      - POSTGRES_DB=blogapi
     networks:
       - blogapi-network
-    depends_on:
-      - "db"
 networks:
   blogapi-network:
     name: blogapi-network

@@ -12,7 +12,6 @@ import com.sopromadze.blogapi.repository.UserRepository;
 import com.sopromadze.blogapi.security.UserPrincipal;
 import com.sopromadze.blogapi.service.TodoService;
 import com.sopromadze.blogapi.utils.AppConstants;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,18 +21,15 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 
-import static com.sopromadze.blogapi.utils.AppConstants.CREATED_AT;
-import static com.sopromadze.blogapi.utils.AppConstants.ID;
-import static com.sopromadze.blogapi.utils.AppConstants.TODO;
-import static com.sopromadze.blogapi.utils.AppConstants.YOU_DON_T_HAVE_PERMISSION_TO_MAKE_THIS_OPERATION;
+import static com.sopromadze.blogapi.utils.AppConstants.*;
 
 @Service
 public class TodoServiceImpl implements TodoService {
 
-	@Autowired
+//	@Autowired
 	private TodoRepository todoRepository;
 
-	@Autowired
+//	@Autowired
 	private UserRepository userRepository;
 
 	@Override

@@ -13,20 +13,18 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.NaturalId;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
-@Entity
+//@EqualsAndHashCode(callSuper = true)
+//@Entity
 @Data
-@NoArgsConstructor
-@Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = {"username"}),
-        @UniqueConstraint(columnNames = {"email"})})
+//@NoArgsConstructor
+//@Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = {"username"}),
+//        @UniqueConstraint(columnNames = {"email"})})
 public class User extends DateAudit {
     private static final long serialVersionUID = 1L;
 

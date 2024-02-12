@@ -6,16 +6,15 @@ import com.sopromadze.blogapi.model.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
-@Entity
+//@EqualsAndHashCode(callSuper = true)
+//@Entity
 @Data
-@Table(name = "albums", uniqueConstraints = {@UniqueConstraint(columnNames = {"title"})})
+//@Table(name = "albums", uniqueConstraints = {@UniqueConstraint(columnNames = {"title"})})
 public class Album extends UserDateAudit {
     private static final long serialVersionUID = 1L;
 

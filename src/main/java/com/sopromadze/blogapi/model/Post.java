@@ -1,24 +1,21 @@
 package com.sopromadze.blogapi.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.sopromadze.blogapi.infrastructure.persistence.mysql.entity.TagEntity;
 import com.sopromadze.blogapi.model.audit.UserDateAudit;
 import com.sopromadze.blogapi.model.user.User;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
-@Entity
+//@EqualsAndHashCode(callSuper = true)
+//@Entity
 @Data
-@Table(name = "posts", uniqueConstraints = {@UniqueConstraint(columnNames = {"title"})})
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+//@Table(name = "posts", uniqueConstraints = {@UniqueConstraint(columnNames = {"title"})})
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Post extends UserDateAudit {
     private static final long serialVersionUID = 1L;
 
