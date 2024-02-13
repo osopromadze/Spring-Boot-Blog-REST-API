@@ -1,29 +1,30 @@
 package com.sopromadze.blogapi.repository;
 
-import com.sopromadze.blogapi.infrastructure.persistence.mysql.entity.TagEntity;
+import java.util.List;
+import java.util.Optional;
+
+import com.sopromadze.blogapi.infrastructure.persistence.postgres.entity.TagEntity;
 import com.sopromadze.blogapi.model.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-import java.util.Optional;
-
 //@Repository
 public interface PostRepository {
-    Page<Post> findByCreatedBy(Long userId, Pageable pageable);
 
-    Page<Post> findByCategory(Long categoryId, Pageable pageable);
+  Page<Post> findByCreatedBy(Long userId, Pageable pageable);
 
-    Page<Post> findByTags(List<TagEntity> tags, Pageable pageable);
+  Page<Post> findByCategory(Long categoryId, Pageable pageable);
 
-    Long countByCreatedBy(Long userId);
+  Page<Post> findByTags(List<TagEntity> tags, Pageable pageable);
 
-    Optional<Post> findById(Long postId);
+  Long countByCreatedBy(Long userId);
 
-    Page<Post> findAll(Pageable pageable);
+  Optional<Post> findById(Long postId);
 
-    Post save(Post post);
+  Page<Post> findAll(Pageable pageable);
 
-    void deleteById(Long id);
+  Post save(Post post);
+
+  void deleteById(Long id);
 
 }

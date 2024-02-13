@@ -2,7 +2,6 @@ version: '3.8'
 services:
   postgres:
     image: postgres:14-alpine
-    container_name: blogapi-postgres
     ports:
       - "5432:5432"
     volumes:
@@ -11,9 +10,3 @@ services:
       - POSTGRES_PASSWORD=root
       - POSTGRES_USER=root
       - POSTGRES_DB=blogapi
-    networks:
-      - blogapi-network
-networks:
-  blogapi-network:
-    name: blogapi-network
-    driver: bridge
