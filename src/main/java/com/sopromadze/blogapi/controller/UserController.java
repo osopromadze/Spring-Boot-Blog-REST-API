@@ -15,6 +15,8 @@ import com.sopromadze.blogapi.service.AlbumService;
 import com.sopromadze.blogapi.service.PostService;
 import com.sopromadze.blogapi.service.UserService;
 import com.sopromadze.blogapi.utils.AppConstants;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+@Tag(name = "2- Users", description = "Operations related to users")
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -43,6 +46,7 @@ public class UserController {
 	@Autowired
 	private AlbumService albumService;
 
+	@Operation(description = "Get logged in user profile", summary = "Get logged in user profile")
 	@GetMapping("/me")
 	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<UserSummary> getCurrentUser(@CurrentUser UserPrincipal currentUser) {
@@ -51,6 +55,7 @@ public class UserController {
 		return new ResponseEntity< >(userSummary, HttpStatus.OK);
 	}
 
+	@Operation(description = "Check if username is available to register", summary = "Check username availability")
 	@GetMapping("/checkUsernameAvailability")
 	public ResponseEntity<UserIdentityAvailability> checkUsernameAvailability(@RequestParam(value = "username") String username) {
 		UserIdentityAvailability userIdentityAvailability = userService.checkUsernameAvailability(username);
@@ -58,12 +63,14 @@ public class UserController {
 		return new ResponseEntity< >(userIdentityAvailability, HttpStatus.OK);
 	}
 
+	@Operation(description = "Check if email is available to register", summary = "Check email availability")
 	@GetMapping("/checkEmailAvailability")
 	public ResponseEntity<UserIdentityAvailability> checkEmailAvailability(@RequestParam(value = "email") String email) {
 		UserIdentityAvailability userIdentityAvailability = userService.checkEmailAvailability(email);
 		return new ResponseEntity< >(userIdentityAvailability, HttpStatus.OK);
 	}
 
+	@Operation(description = "Get user profile by username", summary = "Get user profile")
 	@GetMapping("/{username}/profile")
 	public ResponseEntity<UserProfile> getUSerProfile(@PathVariable(value = "username") String username) {
 		UserProfile userProfile = userService.getUserProfile(username);
@@ -71,6 +78,7 @@ public class UserController {
 		return new ResponseEntity< >(userProfile, HttpStatus.OK);
 	}
 
+	@Operation(description = "Get posts created by user", summary = "Get posts")
 	@GetMapping("/{username}/posts")
 	public ResponseEntity<PagedResponse<Post>> getPostsCreatedBy(@PathVariable(value = "username") String username,
 			@RequestParam(value = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
@@ -80,6 +88,7 @@ public class UserController {
 		return new ResponseEntity<  >(response, HttpStatus.OK);
 	}
 
+	@Operation(description = "Get albums created by user", summary = "Get albums")
 	@GetMapping("/{username}/albums")
 	public ResponseEntity<PagedResponse<Album>> getUserAlbums(@PathVariable(name = "username") String username,
 			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
@@ -90,6 +99,7 @@ public class UserController {
 		return new ResponseEntity<  >(response, HttpStatus.OK);
 	}
 
+	@Operation(description = "Add user (Only for admins)", summary = "Create user")
 	@PostMapping
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
@@ -98,6 +108,7 @@ public class UserController {
 		return new ResponseEntity< >(newUser, HttpStatus.CREATED);
 	}
 
+	@Operation(description = "Update user (If profile belongs to logged in user or logged in user is admin)", summary = "Update user")
 	@PutMapping("/{username}")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public ResponseEntity<User> updateUser(@Valid @RequestBody User newUser,
@@ -107,6 +118,7 @@ public class UserController {
 		return new ResponseEntity< >(updatedUSer, HttpStatus.CREATED);
 	}
 
+	@Operation(description = "Delete user (For logged in user or admin)", summary = "Delete user")
 	@DeleteMapping("/{username}")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public ResponseEntity<ApiResponse> deleteUser(@PathVariable(value = "username") String username,
@@ -116,6 +128,7 @@ public class UserController {
 		return new ResponseEntity< >(apiResponse, HttpStatus.OK);
 	}
 
+	@Operation(description = "Give admin role to user (only for admins)", summary = "Promote to admin")
 	@PutMapping("/{username}/giveAdmin")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ApiResponse> giveAdmin(@PathVariable(name = "username") String username) {
@@ -124,6 +137,7 @@ public class UserController {
 		return new ResponseEntity< >(apiResponse, HttpStatus.OK);
 	}
 
+	@Operation(description = "Take admin role from user (only for admins)", summary = "Demote to admin")
 	@PutMapping("/{username}/takeAdmin")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ApiResponse> takeAdmin(@PathVariable(name = "username") String username) {
@@ -132,6 +146,7 @@ public class UserController {
 		return new ResponseEntity< >(apiResponse, HttpStatus.OK);
 	}
 
+	@Operation(description = "Update user profile (If profile belongs to logged in user or logged in user is admin)", summary = "Update user")
 	@PutMapping("/setOrUpdateInfo")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public ResponseEntity<UserProfile> setAddress(@CurrentUser UserPrincipal currentUser,

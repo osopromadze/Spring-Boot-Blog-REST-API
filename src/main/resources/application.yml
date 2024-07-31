@@ -21,3 +21,8 @@ app:
 
 cors:
   allowedOrings: '*'
+
+#Swagger-Ui ~Ordering the controllers
+springdoc:
+  swagger-ui:
+    tagsSorter: alpha
