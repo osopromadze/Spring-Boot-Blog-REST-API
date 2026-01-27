@@ -21,6 +21,7 @@ import java.util.Objects;
 @ControllerAdvice
 public class RestControllerExceptionHandler {
 
+	@ExceptionHandler(BlogapiException.class)
 	public ResponseEntity<ApiResponse> resolveException(BlogapiException exception) {
 		String message = exception.getMessage();
 		HttpStatus status = exception.getStatus();
@@ -114,5 +115,22 @@ public class RestControllerExceptionHandler {
 		messages.add(message);
 		return new ResponseEntity<>(new ExceptionResponse(messages, HttpStatus.BAD_REQUEST.getReasonPhrase(),
 				HttpStatus.BAD_REQUEST.value()), HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(RuntimeException.class)
+	@ResponseBody
+	public ResponseEntity<ApiResponse> resolveException(RuntimeException ex) {
+		String message = ex.getMessage();
+		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+		if (message != null && message.contains("Bad credentials")) {
+			status = HttpStatus.UNAUTHORIZED;
+		}
+
+		ApiResponse apiResponse = new ApiResponse();
+		apiResponse.setSuccess(Boolean.FALSE);
+		apiResponse.setMessage(message);
+
+		return new ResponseEntity<>(apiResponse, status);
 	}
 }

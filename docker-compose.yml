@@ -24,6 +24,8 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
+    environment:
+      DB_HOST: blogapi-db
     ports:
       - "8080:8080"
     networks:
