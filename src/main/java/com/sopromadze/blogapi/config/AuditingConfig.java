@@ -31,8 +31,16 @@ class SpringSecurityAuditAwareImpl implements AuditorAware<Long> {
 			return Optional.empty();
 		}
 
-		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+		Object principal = authentication.getPrincipal();
+		
+		// Handle both UserPrincipal and standard Spring Security User objects
+		if (principal instanceof UserPrincipal) {
+			return Optional.ofNullable(((UserPrincipal) principal).getId());
+		} else if (principal instanceof org.springframework.security.core.userdetails.User) {
+			// For @WithMockUser, return null to skip auditing
+			return Optional.empty();
+		}
 
-		return Optional.ofNullable(userPrincipal.getId());
+		return Optional.empty();
 	}
 }

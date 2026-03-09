@@ -66,7 +66,7 @@ public class PostController {
 			@CurrentUser UserPrincipal currentUser) {
 		PostResponse postResponse = postService.addPost(postRequest, currentUser);
 
-		return new ResponseEntity< >(postResponse, HttpStatus.CREATED);
+		return ResponseEntity.status(HttpStatus.CREATED).body(postResponse);
 	}
 
 	@GetMapping("/{id}")
@@ -82,7 +82,7 @@ public class PostController {
 			@Valid @RequestBody PostRequest newPostRequest, @CurrentUser UserPrincipal currentUser) {
 		Post post = postService.updatePost(id, newPostRequest, currentUser);
 
-		return new ResponseEntity< >(post, HttpStatus.OK);
+		return ResponseEntity.ok(post);
 	}
 
 	@DeleteMapping("/{id}")
@@ -90,6 +90,6 @@ public class PostController {
 	public ResponseEntity<ApiResponse> deletePost(@PathVariable(name = "id") Long id, @CurrentUser UserPrincipal currentUser) {
 		ApiResponse apiResponse = postService.deletePost(id, currentUser);
 
-		return new ResponseEntity< >(apiResponse, HttpStatus.OK);
+		return ResponseEntity.ok(apiResponse);
 	}
 }

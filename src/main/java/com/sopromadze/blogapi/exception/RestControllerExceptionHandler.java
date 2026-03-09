@@ -5,6 +5,7 @@ import com.sopromadze.blogapi.payload.ExceptionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -21,6 +22,7 @@ import java.util.Objects;
 @ControllerAdvice
 public class RestControllerExceptionHandler {
 
+	@ExceptionHandler(BlogapiException.class)
 	public ResponseEntity<ApiResponse> resolveException(BlogapiException exception) {
 		String message = exception.getMessage();
 		HttpStatus status = exception.getStatus();
@@ -62,9 +64,11 @@ public class RestControllerExceptionHandler {
 	@ExceptionHandler(AccessDeniedException.class)
 	@ResponseBody
 	public ResponseEntity<ApiResponse> resolveException(AccessDeniedException exception) {
-		ApiResponse apiResponse = exception.getApiResponse();
+		ApiResponse apiResponse = new ApiResponse();
+		apiResponse.setSuccess(Boolean.FALSE);
+		apiResponse.setMessage("Access is denied");
 
-		return new ResponseEntity< >(apiResponse, HttpStatus.FORBIDDEN);
+		return new ResponseEntity<>(apiResponse, HttpStatus.FORBIDDEN);
 	}
 
 	@ExceptionHandler({ MethodArgumentNotValidException.class })
@@ -114,5 +118,22 @@ public class RestControllerExceptionHandler {
 		messages.add(message);
 		return new ResponseEntity<>(new ExceptionResponse(messages, HttpStatus.BAD_REQUEST.getReasonPhrase(),
 				HttpStatus.BAD_REQUEST.value()), HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(RuntimeException.class)
+	@ResponseBody
+	public ResponseEntity<ApiResponse> resolveException(RuntimeException ex) {
+		String message = ex.getMessage();
+		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+		if (message != null && message.contains("Bad credentials")) {
+			status = HttpStatus.UNAUTHORIZED;
+		}
+
+		ApiResponse apiResponse = new ApiResponse();
+		apiResponse.setSuccess(Boolean.FALSE);
+		apiResponse.setMessage(message);
+
+		return new ResponseEntity<>(apiResponse, status);
 	}
 }

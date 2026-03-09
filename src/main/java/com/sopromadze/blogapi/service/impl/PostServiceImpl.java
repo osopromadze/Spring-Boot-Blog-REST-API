@@ -87,7 +87,7 @@ public class PostServiceImpl implements PostService {
 				.orElseThrow(() -> new ResourceNotFoundException(CATEGORY, ID, id));
 
 		Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
-		Page<Post> posts = postRepository.findByCategory(category.getId(), pageable);
+		Page<Post> posts = postRepository.findByCategoryId(category.getId(), pageable);
 
 		List<Post> content = posts.getNumberOfElements() == 0 ? Collections.emptyList() : posts.getContent();
 

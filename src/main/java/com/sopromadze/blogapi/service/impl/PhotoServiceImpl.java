@@ -79,6 +79,7 @@ public class PhotoServiceImpl implements PhotoService {
 		if (photo.getAlbum().getUser().getId().equals(currentUser.getId())
 				|| currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
 			photo.setTitle(photoRequest.getTitle());
+			photo.setUrl(photoRequest.getUrl());
 			photo.setThumbnailUrl(photoRequest.getThumbnailUrl());
 			photo.setAlbum(album);
 			Photo updatedPhoto = photoRepository.save(photo);

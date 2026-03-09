@@ -116,6 +116,7 @@ public class User extends DateAudit {
 		this.username = username;
 		this.email = email;
 		this.password = password;
+		this.roles = new ArrayList<>();
 	}
 
 
@@ -164,17 +165,11 @@ public class User extends DateAudit {
 	}
 
 	public List<Role> getRoles() {
-
-		return roles == null ? null : new ArrayList<>(roles);
+		return roles;
 	}
 
 	public void setRoles(List<Role> roles) {
-
-		if (roles == null) {
-			this.roles = null;
-		} else {
-			this.roles = Collections.unmodifiableList(roles);
-		}
+		this.roles = roles;
 	}
 
 	public List<Comment> getComments() {

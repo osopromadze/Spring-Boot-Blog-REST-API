@@ -48,7 +48,7 @@ public class UserController {
 	public ResponseEntity<UserSummary> getCurrentUser(@CurrentUser UserPrincipal currentUser) {
 		UserSummary userSummary = userService.getCurrentUser(currentUser);
 
-		return new ResponseEntity< >(userSummary, HttpStatus.OK);
+		return new ResponseEntity<>(userSummary, HttpStatus.OK);
 	}
 
 	@GetMapping("/checkUsernameAvailability")
@@ -65,6 +65,7 @@ public class UserController {
 	}
 
 	@GetMapping("/{username}/profile")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public ResponseEntity<UserProfile> getUSerProfile(@PathVariable(value = "username") String username) {
 		UserProfile userProfile = userService.getUserProfile(username);
 
