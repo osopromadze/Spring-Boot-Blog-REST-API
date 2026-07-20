@@ -21,6 +21,8 @@ import java.util.Objects;
 @ControllerAdvice
 public class RestControllerExceptionHandler {
 
+    @ExceptionHandler(BlogapiException.class)
+    @ResponseBody
 	public ResponseEntity<ApiResponse> resolveException(BlogapiException exception) {
 		String message = exception.getMessage();
 		HttpStatus status = exception.getStatus();
